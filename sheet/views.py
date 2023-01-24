@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from sheet.models import School
 
 def index(request):
-    return render(request, 'sheet/index.html')
+    schools = School.objects.all()
+    return render(request, 'sheet/index.html', {'schools': schools})
