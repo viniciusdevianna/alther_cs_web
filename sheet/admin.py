@@ -1,4 +1,5 @@
 from django.contrib import admin
-from sheet.models import School
+from django.apps import apps
+from sheet.models import *
 
-admin.site.register(School)
+admin.site.register(apps.all_models['sheet'].values())

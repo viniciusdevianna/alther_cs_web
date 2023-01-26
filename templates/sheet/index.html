@@ -82,9 +82,85 @@
             </tr>
         </table>
     </div>
-    <h2>Schools</h2>
-    {% for school in schools %}
-        <p>{{ school }}</p>
-    {% endfor %}
+    <div class="actions-information">
+        <h2>Actions</h2>
+        <table>
+            <tr>
+                <th>Ação</th>
+                <th>d4</th>
+                <th>d6</th>
+                <th>d8</th>
+                <th>d10</th>
+                <th>d12</th>
+                <th>d20</th>
+                <th>Bônus</th>
+                <th>Penalidade</th>
+            </tr>
+            <tr>
+                <th>ACERTAR</th>
+                <th>{{ action.nd4 }}</th>
+                <th>{{ action.nd6 }}</th>
+                <th>{{ action.nd8 }}</th>
+                <th>{{ action.nd10 }}</th>
+                <th>{{ action.nd12 }}</th>
+                <th>{{ action.nd20 }}</th>
+                <th>{{ action.flat_bonus }}</th>
+                <th>{{ action.flat_penalty }}</th>
+                <th>
+                    <button onclick="rollActionDice()">Rolar</button></a>
+                </th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </table>
+    </div>
+    <script>
+        var result = "{{ result }}"
+        function rollActionDice() {
+            console.log(result)
+        }
+    </script>
 </body>
 </html>
