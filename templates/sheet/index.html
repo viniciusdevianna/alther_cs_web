@@ -83,6 +83,84 @@
             {% endfor %}            
         </table>
     </div>
-
+    <div class="path-information">
+        <h2>Caminhos</h2>
+        <h3>Ativo:</h3>
+        <p>{{ active_path.path_ID }}</p>
+        <table>
+            <tr>
+                <th>PC Atual</th>
+                <th>PC Total</th>
+                <th>Nível</th>
+                <th>Mestre</th>
+            </tr>
+            <tr>
+                <th>{{ active_path.current_pp }}</th>
+                <th>{{ active_path.total_pp }}</th>
+                <th>{{ active_path.level }}</th>
+                <th>{{ active_path.is_master }}</th>
+            </tr>
+        </table>
+    </div>
+    <div class="skills-information">
+        <h2>Habilidades</h2>
+        <table>
+            <tr>
+                <th>Slot</th>
+                <th>Habilidade</th>
+                <th>Descrição</th>
+            </tr>            
+            <tr>
+                <th>Intrínseca</th>
+                <th>{{ equipped_skills.intrinsic.name }}</th>
+                <th>{{ equipped_skills.intrinsic.description }}</th>
+            </tr>
+            <tr>
+                <th>Padrão 1</th>
+                <th>{{ equipped_skills.main_1.name }}</th>
+                <th>{{ equipped_skills.main_1.description }}</th>
+            </tr>
+            <tr>
+                <th>Padrão 2</th>
+                <th>{{ equipped_skills.main_2.name }}</th>
+                <th>{{ equipped_skills.main_2.description }}</th>
+            </tr>
+            <tr>
+                <th>Padrão 3</th>
+                <th>{{ equipped_skills.main_3.name }}</th>
+                <th>{{ equipped_skills.main_3.name }}</th>
+            </tr>
+            <tr>
+                <th>Padrão 4</th>
+                <th>{{ equipped_skills.main_4.name }}</th>
+                <th>{{ equipped_skills.main_4.description }}</th>
+            </tr>
+            <tr>
+                <th>Suporte 1</th>
+                <th>{{ equipped_skills.support_1.name }}</th>
+                <th>{{ equipped_skills.support_1.description }}</th>
+            </tr>
+            <tr>
+                <th>Suporte 2</th>
+                <th>{{ equipped_skills.support_2.name }}</th>
+                <th>{{ equipped_skills.support_2.description }}</th>
+            </tr>
+            <tr>
+                <th>Reação</th>
+                <th>{{ equipped_skills.reaction.name }}</th>
+                <th>{{ equipped_skills.reaction.description }}</th>
+            </tr>
+            <tr>
+                <th>Movimento</th>
+                <th>{{ equipped_skills.movement.name }}</th>
+                <th>{{ equipped_skills.movement.description }}</th>
+            </tr>
+            <tr>
+                <th>Perfeita</th>
+                <th>{{ equipped_skills.perfect.name }}</th>
+                <th>{{ equipped_skills.perfect.description }}</th>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>

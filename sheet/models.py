@@ -460,3 +460,8 @@ class EquippedSkill(models.Model):
     def __repr__(self) -> str:
         return f"Equipped skills ({self.char_ID})"
 
+    def get_slots(self):
+        field_names = [str(field) for field in self._meta.get_fields()]
+        return (field_name[field_name.rindex('.') + 1:] for field_name in field_names[1:])
+       
+
