@@ -11,79 +11,46 @@
 <body>
     <h1>Ficha de Personagem</h1>
     <div class="main-information">
-        <h2 class="char-name">Raeniel</h2>
-        <p class="char-race">Rae</p>
-        <p class="char-physical-information">50 ciclos</p>
-        <p class="char-physical-information">110 kg</p>
-        <p class="char-physical-information">1.90 m</p>
-        <p class="char-aspiration">Ofensor</p>
+        <h2 class="char-name">{{ character.name }}</h2>
+        <p class="char-race">{{ character.race }}</p>
+        <p class="char-physical-information">{{ character.age }} ciclos</p>
+        <p class="char-physical-information">{{ character.weight }} kg</p>
+        <p class="char-physical-information">{{ character.height }} m</p>
+        <p class="char-aspiration">{{ character.aspiration }}</p>
     </div>
     <div class="school-information">
-        <h3>Desbravadores do Vazio</h3>
+        <h3>{{ character.school }}</h3>
     </div>
     <div class="level-information">
-        <p class="char-level">Nível 1</p>
-        <p class="char-xp">300 / 900 XP</p>
+        <p class="char-level">Nível {{ character.level }}</p>
+        <p class="char-xp">{{ character.xp_current }} / {{ character.xp_total}} XP</p>
     </div>
     <div class="unbalance-information">
-        <h2 class="char-unbalance-points">10 PD</h2>
+        <h2 class="char-unbalance-points">{{ character.unbalance }} PD</h2>
     </div>
     <div class="attributes-information">
         <h2 class="attributes-header">Atributos</h2>
         <table>
             <tr>
-                <th></th>
+                <th>Atributo</th>
                 <th>Atual</th>
                 <th>Total</th>
                 <th>Temp</th>
                 <th>Treino</th>
             </tr>
+            {% for attribute in attributes %}
             <tr>
-                <th>Corpo</th>
-                <th>10</th>
-                <th>10</th>
-                <th></th>
-                <th></th>
+                <th>{{ attribute.type }}</th>
+                <th>{{ attribute.current_value }}</th>
+                <th>{{ attribute.total_value }}</th>
+                <th>{{ attribute.temp_value }}</th>
+                <th>{{ attribute.training_level }}</th>
             </tr>
-            <tr>
-                <th>Mente</th>
-                <th>18</th>
-                <th>18</th>
-                <th></th>
-                <th>1</th>
-            </tr>
-            <tr>
-                <th>Foco</th>
-                <th>10</th>
-                <th>10</th>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <th>Espírito</th>
-                <th>18</th>
-                <th>18</th>
-                <th></th>
-                <th>1</th>
-            </tr>
-            <tr>
-                <th>Social</th>
-                <th>10</th>
-                <th>10</th>
-                <th></th>
-                <th>1</th>
-            </tr>
-            <tr>
-                <th>Natureza</th>
-                <th>15</th>
-                <th>15</th>
-                <th></th>
-                <th></th>
-            </tr>
+            {% endfor %}            
         </table>
     </div>
     <div class="actions-information">
-        <h2>Actions</h2>
+        <h2>Ações</h2>
         <table>
             <tr>
                 <th>Ação</th>
@@ -96,8 +63,9 @@
                 <th>Bônus</th>
                 <th>Penalidade</th>
             </tr>
+            {% for action in actions %}
             <tr>
-                <th>ACERTAR</th>
+                <th>{{ action.type }}</th>
                 <th>{{ action.nd4 }}</th>
                 <th>{{ action.nd6 }}</th>
                 <th>{{ action.nd8 }}</th>
@@ -107,60 +75,14 @@
                 <th>{{ action.flat_bonus }}</th>
                 <th>{{ action.flat_penalty }}</th>
                 <th>
-                    <button onclick="rollActionDice()">Rolar</button></a>
+                    <form action="{% url 'roll_action' action.id %}">
+                        <button>Rolar</button></a>
+                    </form>                    
                 </th>
             </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
+            {% endfor %}            
         </table>
     </div>
-    <script>
-        var result = "{{ result }}"
-        function rollActionDice() {
-            console.log(result)
-        }
-    </script>
+
 </body>
 </html>

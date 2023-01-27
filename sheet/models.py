@@ -258,7 +258,7 @@ class Attribute(models.Model):
         SOCIAL = "S", _("SOCIAL")
         NATURE = "N", _("NATUREZA")    
 
-    type = models.CharField(
+    _type = models.CharField(
         max_length=1,
         choices=AttrTypes.choices
     )
@@ -271,8 +271,12 @@ class Attribute(models.Model):
         on_delete=models.CASCADE
     )
 
+    @property
+    def type(self) -> str:
+        return self.AttrTypes(self._type).label
+
     def __str__(self) -> str:
-        return f"{self.AttrTypes(self.type).label} de {self.char_ID}"
+        return f"{self.type} de {self.char_ID}"
 
     def __repr__(self) -> str:
         return f"{self.type} {self.current_value} / {self.total_value} [Treino: {self.training_level}]"
@@ -286,7 +290,7 @@ class Action(models.Model):
         RESIST = "R", _("RESISTIR")
         CHANNEL = "C", _("CANALIZAR")
 
-    type = models.CharField(
+    _type = models.CharField(
         max_length=1,
         choices=ActionTypes.choices
     )
@@ -303,8 +307,12 @@ class Action(models.Model):
         on_delete=models.CASCADE
     )
 
+    @property
+    def type(self) -> str:
+        return self.ActionTypes(self._type).label
+
     def __str__(self) -> str:
-        return f"{self.ActionTypes(self.type).label} para {self.char_ID}"
+        return f"{self.type} para {self.char_ID}"
 
     def __repr__(self) -> str:
         return f"{self.type} ({self.char_ID})"
