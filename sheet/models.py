@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
 
 from random import randrange as rd
 
@@ -190,6 +191,13 @@ class Skill(models.Model):
 
 # Models for the construction of the system mechanics for the character
 class Character(models.Model):
+
+    # User that created the character
+    player_ID = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='player'
+    )
 
     # Background and physical characteristics
     name = models.CharField(

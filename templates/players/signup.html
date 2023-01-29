@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Signup</title>
+</head>
+<body>
+    {% include 'partials/_alerts.html' %}
+    <form action="{% url 'signup' %}" method="POST">
+        {% csrf_token %}
+        <div>
+            {% for field in form.visible_fields %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+        </div>
+        {% for error in field.errors %}
+        <div>
+            {{ error }}
+        </div>
+        {% endfor %}
+        {% endfor %}
+        <div>
+            <button type="submit">Cadastrar</button>
+        </div>
+    </form>
+</body>
+</html>

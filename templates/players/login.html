@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Login</title>
+</head>
+<body>
+    {% include 'partials/_alerts.html' %}
+    <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <div>
+            {% for field in form.visible_fields %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+        </div>
+        {% endfor %}
+        <div>
+            <button type="submit">Entrar</button>
+        </div>
+    </form>
+</body>
+</html>
