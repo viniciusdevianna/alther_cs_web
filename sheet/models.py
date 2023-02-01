@@ -171,7 +171,7 @@ class Skill(models.Model):
     )
     description = models.TextField()
     cost = models.PositiveIntegerField()
-    category = models.CharField(
+    _category = models.CharField(
         null=False,
         blank=False,
         max_length=3,
@@ -182,6 +182,14 @@ class Skill(models.Model):
         Path,
         on_delete=models.CASCADE
     )
+
+    @property
+    def category(self) -> str:
+        return self.Category(self._category).label
+
+    @category.setter
+    def category(self, new_category: Category) -> None:
+        self._category = new_category
 
     def __str__(self) -> str:
         return self.name
@@ -283,6 +291,10 @@ class Attribute(models.Model):
     def type(self) -> str:
         return self.AttrTypes(self._type).label
 
+    @type.setter
+    def type(self, new_type: AttrTypes) -> None:
+        self._type = new_type
+
     def __str__(self) -> str:
         return f"{self.type} de {self.char_ID}"
 
@@ -318,6 +330,10 @@ class Action(models.Model):
     @property
     def type(self) -> str:
         return self.ActionTypes(self._type).label
+
+    @type.setter
+    def type(self, new_type: ActionTypes) -> None:
+        self._type = new_type
 
     def __str__(self) -> str:
         return f"{self.type} para {self.char_ID}"
