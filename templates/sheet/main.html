@@ -28,9 +28,27 @@
         <p class="char-xp" id="char-xp-current">{{ character.xp_current }} / </p>
         <input type="number" value="{{ character.xp_total }}" class="char-xp" id="input-char-xp">
     </div>
-    <div class="unbalance-information">
-        <h2 class="char-unbalance-points">{{ character.unbalance }} PD</h2>
-    </div>
+    <div class="health-information">
+        <div class="unbalance-points">
+            <label class="unbalance-points" for="input-unbalance-points">PD</label>
+            <input type="number" value="{{ character.unbalance }}" class="unbalance-points" id="input-unbalance-points">
+        </div>
+        <div class="health-points">
+            <h2 class="health-points">Pontos de Vida</h2>
+            <table class="health-points-table">
+                <tr>
+                    <th>Atual</th>
+                    <th>Total</th>
+                    <th>Temp</th>
+                </tr>
+                <tr>
+                    <th><input type="text" class="health-points" value="{{ character.hp_current }}" id="input-health-points-current"></th>
+                    <th><input type="text" class="health-points" value="{{ character.hp_total }}" id="input-health-points-total"></th>
+                    <th><input type="text" class="health-points" value="{{ character.hp_temp }}" id="input-health-points-temp"></th>
+                </tr>
+            </table>
+        </div>
+    </div>    
     <div class="attributes-information">
         <h2 class="attributes-header">Atributos</h2>
         <table>
@@ -166,7 +184,24 @@
                 <th>{{ equipped_skills.perfect.description }}</th>
             </tr>
         </table>
-    </div>    
+    </div>
+
+    <div class="miscelanous-information">
+        <div class="inventory-information">
+            <label for="input-coin" class="inventory-information">Moeda: </label>
+            <input type="text" id="input-coin" class="inventory-information" value="{{ character.coin }}">
+            <label for="input-inventory" class="inventory-information">Inventário</label>
+            <textarea class="inventory-information" id="input-inventory" rows="10" cols="50">
+                {{ character.inventory }}
+            </textarea>
+        </div>
+        <div class="annotations">
+            <label for="input-annotations" class="annotations">Anotações: </label>
+            <textarea id="input-annotations" cols="50" rows="10" class="annotations">
+                {{ character.annotations }}
+            </textarea>
+        </div>
+    </div>
 
     {% block javascript %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>

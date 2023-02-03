@@ -3,6 +3,30 @@ function updateRollResultBox(rollResult, actionID) {
     rollBox.text(rollResult);
 }
 
+function updateBasicInfo(selector, infoToUpdate, event) {
+    if (event.which == 13) {
+        const charID = $('.main-information').data('character');
+        const newValue = $(event.target).val();
+        $.ajax({
+            type: 'GET',
+            url: '/sheet/update/basic/',
+            data: {
+                'char_ID': charID,
+                'info_to_update': infoToUpdate,
+                'new_value': newValue
+            },
+            success: (response) => {
+                $(selector).val(response[infoToUpdate]);
+                $(selector).blur();
+            },
+            error: (response) => {
+                console.log('Error');
+            }
+        });
+        event.preventDefault();
+    }
+}
+
 $('.roll-button').on('click', (event) => {
         const actionID = $(event.target).val();
         $.ajax({
@@ -21,15 +45,15 @@ $('.roll-button').on('click', (event) => {
     }
 );
 
-$('#input-char-xp').on('keypress', (event) => {
+$('#input-char-xp').on('keydown', (event) => {
     if (event.which == 13) {
         const totalXP = $(event.target).val();
-        const char_ID = $('.main-information').data('character');
+        const charID = $('.main-information').data('character');
         $.ajax({
             type: 'GET',
             url: '/sheet/level_up/',
             data: {
-                'char_ID': char_ID,
+                'char_ID': charID,
                 'total_XP': totalXP
             },
             success: (response) => {
@@ -44,4 +68,21 @@ $('#input-char-xp').on('keypress', (event) => {
         });
         event.preventDefault();
     }    
+});
+
+// A dict with all the inputs for basic char info and their respective model fields
+// dict[selector, model_field]
+basicInfo = {
+    '#input-unbalance-points': 'unbalance',
+    '#input-health-points-current': 'hp_current',
+    '#input-health-points-total': 'hp_total',
+    '#input-health-points-temp': 'hp_temp',
+    '#input-coin': 'coin',
+};
+
+// Iterate through all basic char info and add the onkeydown event listener
+$.each(basicInfo, (selector, infoToUpdate) => {
+    $(selector).on('keydown', (event) => {
+        updateBasicInfo(selector, infoToUpdate, event);
+    })
 });

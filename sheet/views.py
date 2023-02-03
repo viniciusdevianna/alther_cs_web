@@ -98,6 +98,26 @@ def level_up(request):
     return redirect('home')
 
 
+def update_basic(request):
+    if request.accepts("application/json") and request.method == 'GET':
+        char_ID = int(request.GET.get('char_ID'))
+        info_to_update = request.GET.get('info_to_update')
+        new_value = request.GET.get('new_value')
+
+        character = Character.objects.get(pk=char_ID)
+        old_value = getattr(character, info_to_update)
+
+        if type(new_value) != type(old_value):
+            new_value = type(old_value)(new_value)
+
+        setattr(character, info_to_update, new_value)
+        character.save()
+
+        return JsonResponse({info_to_update: new_value})
+    
+    return redirect('home')
+
+
 def create_character(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não reconhecido')
