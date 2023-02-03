@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import JsonResponse
+from django.core import serializers
 from sheet.models import *
 from sheet.forms import CreateCharForm, AttributeForm
 
@@ -45,22 +47,56 @@ def main(request, char_ID):
     actions = Action.objects.filter(char_ID=char_ID)
     attributes = Attribute.objects.filter(char_ID=char_ID)
     active_path = AvailablePath.objects.filter(char_ID=char_ID).get(path_ID=character.active_path)
-    equipped_skills = EquippedSkill.objects.get(char_ID=char_ID)
+    equipped_skills = EquippedSkill.objects.get(char_ID=char_ID)    
 
     char_data = {
         'character': character,
-        'actions': actions,
         'attributes': attributes,
         'active_path': active_path,
         'equipped_skills': equipped_skills,
+        'actions': actions,
     }
     return render(request, 'sheet/main.html', char_data)
 
-def roll_action(request, action_ID):
-    action = Action.objects.get(id=action_ID)
-    char_ID = action.char_ID.pk
-    print(action.roll_dice()['result'])
-    return redirect('main', char_ID=char_ID)
+# Views that manipulate data in the main sheet view
+def roll_action(request):
+    if request.accepts('application/json') and request.method == 'GET':
+        action_ID = int(request.GET.get('action_ID'))
+        action_to_roll = Action.objects.get(pk=action_ID)
+        roll = action_to_roll.roll_dice()
+
+        return JsonResponse({"roll": roll})
+        
+    return redirect('home')
+
+
+def level_up(request):
+    if request.accepts('application/json') and request.method == 'GET':
+        char_ID = int(request.GET.get('char_ID'))
+        new_total_xp = int(request.GET.get('total_XP'))
+        character = Character.objects.get(pk=char_ID)
+        # char_attrs = Attribute.objects.filter(char_ID=character)
+        # char_actions = Action.objects.filter(char_ID=character)
+
+        xp_diff = new_total_xp - character.xp_total
+        character.xp_current += xp_diff
+        if new_total_xp % 1000 == 0:
+            character.level = new_total_xp // 1000 + 1
+        #     for _ in range(xp_diff // 1000):
+        #         character.hp_total += 10
+        #         for attr in char_attrs:
+        #             attr.level_up()
+        #             attr.save()
+        #         for action in char_actions:
+        #             action.level_up()
+        #             action.save()
+        character.xp_total = new_total_xp
+        character.save()
+
+        return JsonResponse({'level': character.level, 'xp_current': character.xp_current, 'xp_total': character.xp_total})
+    
+    return redirect('home')
+
 
 def create_character(request):
     if not request.user.is_authenticated:

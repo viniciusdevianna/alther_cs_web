@@ -11,7 +11,7 @@
 <body>
     {% include 'partials/_alerts.html' %}
     <h1>Ficha de Personagem</h1>
-    <div class="main-information">
+    <div class="main-information" data-character="{{ character.pk }}">
         <h2 class="char-name">{{ character.name }}</h2>
         <p class="char-race">{{ character.race }}</p>
         <p class="char-physical-information">{{ character.age }} ciclos</p>
@@ -24,7 +24,9 @@
     </div>
     <div class="level-information">
         <p class="char-level">Nível {{ character.level }}</p>
-        <p class="char-xp">{{ character.xp_current }} / {{ character.xp_total}} XP</p>
+        <span>XP</span>   
+        <p class="char-xp" id="char-xp-current">{{ character.xp_current }} / </p>
+        <input type="number" value="{{ character.xp_total }}" class="char-xp" id="input-char-xp">
     </div>
     <div class="unbalance-information">
         <h2 class="char-unbalance-points">{{ character.unbalance }} PD</h2>
@@ -63,6 +65,7 @@
                 <th>d20</th>
                 <th>Bônus</th>
                 <th>Penalidade</th>
+                <th></th>
             </tr>
             {% for action in actions %}
             <tr>
@@ -74,11 +77,12 @@
                 <th>{{ action.nd12 }}</th>
                 <th>{{ action.nd20 }}</th>
                 <th>{{ action.flat_bonus }}</th>
-                <th>{{ action.flat_penalty }}</th>
+                <th>{{ action.flat_penalty }}</th>        
                 <th>
-                    <form action="{% url 'roll_action' action.id %}">
-                        <button>Rolar</button></a>
-                    </form>                    
+                    <button type="button" class="roll-button action" value="{{ action.pk }}">Rolar</button>
+                </th>
+                <th>
+                    <p class="roll-result action" id="action-{{ action.pk }}"></p>
                 </th>
             </tr>
             {% endfor %}            
@@ -162,6 +166,11 @@
                 <th>{{ equipped_skills.perfect.description }}</th>
             </tr>
         </table>
-    </div>
+    </div>    
+
+    {% block javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="{% static '/js/main.js' %}"></script>
+    {% endblock javascript %}
 </body>
 </html>

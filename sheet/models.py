@@ -301,6 +301,9 @@ class Attribute(models.Model):
     def __repr__(self) -> str:
         return f"{self.type} {self.current_value} / {self.total_value} [Treino: {self.training_level}]"
 
+    def level_up(self) -> None:
+        self.total_value += 1
+
 class Action(models.Model):
 
     class ActionTypes(models.TextChoices):
@@ -326,6 +329,8 @@ class Action(models.Model):
         Character,
         on_delete=models.CASCADE
     )
+
+    base_dice = Dice.DiceSides.D8
 
     @property
     def type(self) -> str:
@@ -361,6 +366,34 @@ class Action(models.Model):
         total = sum(roll["total"] for roll in all_rolls.values())
 
         return all_rolls | {"result": total}
+
+    def level_up(self) -> None:
+        match self.base_dice:
+            case Dice.DiceSides.D4:
+                self.nd4 -= 1
+                self.nd6 += 1
+                self.base_dice = Dice.DiceSides.D6
+            case Dice.DiceSides.D6:
+                self.nd6 -= 1
+                self.nd8 += 1
+                self.base_dice = Dice.DiceSides.D8
+            case Dice.DiceSides.D8:
+                self.nd8 -= 1
+                self.nd10 += 1
+                self.base_dice = Dice.DiceSides.D10
+            case Dice.DiceSides.D10:
+                self.nd10 -= 1
+                self.nd12 += 1
+                self.base_dice = Dice.DiceSides.D12
+            case Dice.DiceSides.D12:
+                self.nd12 -= 1
+                self.nd20 += 1
+                self.base_dice = Dice.DiceSides.D20
+            case Dice.DiceSides.D20:
+                self.nd4 += 1
+                self.base_dice = Dice.DiceSides.D4
+            case _:
+                raise ValueError('There is no dice with these sides')
 
 
 # Characters can gain access to different paths and skills as they level up
