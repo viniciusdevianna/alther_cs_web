@@ -7,6 +7,7 @@ urlpatterns = [
     path('level_up/', views.level_up, name='level_up'),
     path('update/basic/', views.update_basic, name="update_basic"),
     path('create/', views.create_character, name='create'),
+    path('manipulate/attribute/', views.manipulate_attribute, name='manipulate_attr'),
     path('update/attributes/<int:char_ID>/', views.update_attributes, name='update_attributes'),
     path('skills/<int:char_ID>/', views.skills, name='skills'),
 ]

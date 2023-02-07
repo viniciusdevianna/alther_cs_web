@@ -54,7 +54,9 @@
         <table>
             <tr>
                 <th>Atributo</th>
+                <th></th>
                 <th>Atual</th>
+                <th></th>
                 <th>Total</th>
                 <th>Temp</th>
                 <th>Treino</th>
@@ -62,8 +64,10 @@
             {% for attribute in attributes %}
             <tr>
                 <th>{{ attribute.type }}</th>
-                <th>{{ attribute.current_value }}</th>
-                <th>{{ attribute.total_value }}</th>
+                <th><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="increment-{{ attribute.type }}">+</button></th>
+                <th id="current-{{ attribute.pk }}">{{ attribute.current_value }}</th>
+                <th><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="decrement-{{ attribute.type }}">-</button></th>
+                <th id="total-{{ attribute.pk }}">{{ attribute.total_value }}</th>
                 <th>{{ attribute.temp_value }}</th>
                 <th>{{ attribute.training_level }}</th>
             </tr>

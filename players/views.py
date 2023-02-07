@@ -21,7 +21,7 @@ def login(request):
             if user is not None:
                 auth.login(request, user)
                 messages.success(request, f'{username} logado com sucesso')
-                return redirect('main')
+                return redirect('create')
             else:
                 messages.error(request, 'Informações erradas de login')
                 return redirect('login')

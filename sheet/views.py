@@ -118,6 +118,21 @@ def update_basic(request):
     return redirect('home')
 
 
+def manipulate_attribute(request):
+    if request.accepts("application/json") and request.method == 'GET':
+        attr_ID = int(request.GET.get('attr_ID'))
+        operation = int(request.GET.get('operation'))
+
+        attribute = Attribute.objects.get(pk=attr_ID)
+
+        attribute.current_value += operation
+        attribute.save()
+
+        return JsonResponse({'new_value': attribute.current_value})
+
+    return redirect('home')
+
+
 def create_character(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não reconhecido')

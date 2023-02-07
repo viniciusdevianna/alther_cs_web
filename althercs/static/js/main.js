@@ -86,3 +86,37 @@ $.each(basicInfo, (selector, infoToUpdate) => {
         updateBasicInfo(selector, infoToUpdate, event);
     })
 });
+
+// Manipulating character's attributes
+function changeAttributeCurrentValue(event) {
+    const attrID = $(event.target).val();
+    const operation = $(event.target).attr('id').startsWith('increment') ? 1 : -1;
+    const attrCurrentField = $(`#current-${attrID}`);
+    const attrCurrentValue = parseInt(attrCurrentField.text());
+    const attrTotalValue = parseInt($(`#total-${attrID}`).text());
+    if ((operation > 0 && attrCurrentValue < attrTotalValue) ||
+     (operation < 0 && attrCurrentValue > 0)) {
+        $.ajax({
+            type: 'GET',
+            url: '/sheet/manipulate/attribute/',
+            data: {
+                'attr_ID': attrID,
+                'operation': operation
+            },
+            success: (response) => {
+                attrCurrentField.text(response['new_value']);
+            },
+            error: (response) => {
+                console.log('Error');   
+            }
+        });
+        event.preventDefault();
+    } else {
+        console.log('Attribute cannot go higher than total or lower than zero');
+    }
+    
+}
+
+$('.button-manipulate-attr').on('click', (event) => {
+    changeAttributeCurrentValue(event);
+})
