@@ -46,12 +46,14 @@ def main(request, char_ID):
     character = Character.objects.get(id=char_ID)
     actions = Action.objects.filter(char_ID=char_ID)
     attributes = Attribute.objects.filter(char_ID=char_ID)
-    active_path = AvailablePath.objects.filter(char_ID=char_ID).get(path_ID=character.active_path)
-    equipped_skills = EquippedSkill.objects.get(char_ID=char_ID)    
+    available_paths = AvailablePath.objects.filter(char_ID=char_ID)
+    active_path = available_paths.get(path_ID=character.active_path)
+    equipped_skills = EquippedSkill.objects.get(char_ID=char_ID)  
 
     char_data = {
         'character': character,
         'attributes': attributes,
+        'available_paths': available_paths,
         'active_path': active_path,
         'equipped_skills': equipped_skills,
         'actions': actions,
@@ -132,6 +134,55 @@ def manipulate_attribute(request):
 
     return redirect('home')
 
+def change_active_path(request):
+    if request.accepts("application/json") and request.method == 'GET':
+        new_active_path = int(request.GET.get('active_path'))
+        char_ID = int(request.GET.get('char_ID'))
+
+        character = Character.objects.get(pk=char_ID)
+        path = AvailablePath.objects.get(pk=new_active_path)
+        equipped_skills = EquippedSkill.objects.get(char_ID=character)
+        new_intrinsic = Skill.objects.filter(path=path.path_ID).get(_category=Skill.Category.INTRINSIC)
+
+        character.active_path = path.path_ID
+        equipped_skills.intrinsic = new_intrinsic
+        character.save()
+        equipped_skills.save()
+
+        response = {
+            'current_pp': path.current_pp,
+            'total_pp': path.total_pp,
+            'level': path.level,
+            'is_master': path.is_master,
+            'skill_name': new_intrinsic.name,
+            'skill_description': new_intrinsic.description
+        }
+
+        return JsonResponse(response)
+    
+    return redirect('home')
+
+
+def manipulate_pathpoints(request):
+    if request.accepts("application/json") and request.method == 'GET':
+        active_path_ID = int(request.GET.get('active_path'))
+        new_total_pp = int(request.GET.get('new_total_pp'))
+
+        path = AvailablePath.objects.get(pk=active_path_ID)
+        path.change_total_pp(new_total_pp)
+        path.save()
+
+        response = {
+            'current_pp': path.current_pp,
+            'total_pp': path.total_pp,
+            'level': path.level,
+            'is_master': path.is_master
+        }
+
+        return JsonResponse(response)
+    
+    return redirect('home')
+
 
 def create_character(request):
     if not request.user.is_authenticated:
@@ -183,10 +234,12 @@ def update_attributes(request, char_ID):
     character = Character.objects.get(id=char_ID)
     if Attribute.objects.filter(char_ID=char_ID).exists():
         attributes = Attribute.objects.filter(char_ID=char_ID)
+        redirect_to = 'main'
     else:
         attributes = (
             Attribute(char_ID=character, type=this_type) for this_type in Attribute.AttrTypes
         )
+        redirect_to = 'skills'
 
     if request.method == 'POST':
         forms = tuple(
@@ -200,7 +253,7 @@ def update_attributes(request, char_ID):
             for form in forms:
                 form.save()           
             messages.success(request, 'Atributos atualizados')
-            return redirect('skills', char_ID=char_ID)
+            return redirect(redirect_to, char_ID=char_ID)
         else:
             messages.error(request, 'Atributos inválidos')
             return redirect('update_attributes', char_ID=char_ID)
@@ -232,7 +285,6 @@ def skills(request, char_ID):
     active_path_skills = Skill.objects.filter(path=character.active_path)
 
     if request.method == 'POST':
-        print(request.POST)
         skill_ID = int(request.POST.get('skill_ID'))
         skill_to_learn = Skill.objects.get(id=skill_ID)
 

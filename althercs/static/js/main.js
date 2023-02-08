@@ -27,6 +27,31 @@ function updateBasicInfo(selector, infoToUpdate, event) {
     }
 }
 
+function updatePathInfo(event) {
+    const charID = $('.main-information').data('character');
+    const activePath = $(event.target).val();
+    $.ajax({
+        type: 'GET',
+        url: '/sheet/update/active/path/',
+        data: {
+            'active_path': activePath,
+            'char_ID': charID
+        },
+        success: (response) => {
+            $('#active-current-pp').text(response['current_pp']);
+            $('#active-total-pp').text(response['total_pp']);
+            $('#active-level').text(response['level']);
+            $('#active-is-master').text(response['is-master']);
+            $('#intrinsic-skill-name').text(response['skill_name']);
+            $('#intrinsic-skill-description').text(response['skill_description']);
+        },
+        error: (response) => {
+            console.log('Error');
+        }
+    });
+    event.preventDefault();
+}
+
 $('.roll-button').on('click', (event) => {
         const actionID = $(event.target).val();
         $.ajax({
@@ -119,4 +144,38 @@ function changeAttributeCurrentValue(event) {
 
 $('.button-manipulate-attr').on('click', (event) => {
     changeAttributeCurrentValue(event);
-})
+});
+
+// Manipulating active path
+$('#path-selection').on('change', '#active-path-select', (event) => {
+    updatePathInfo(event);
+});
+
+$('#active-total-pp').on('keydown', 'input', (event) => {
+    if (event.which == 13) {
+        const activePath = $('#active-path-select').val();
+        const newTotalPp = $(event.target).val();
+        $.ajax({
+            type: 'GET',
+            url: '/sheet/manipulate/pathpoints/',
+            data: {
+                'active_path': activePath,
+                'new_total_pp': newTotalPp
+            },
+            success: (response) => {
+                $('#active-current-pp').text(response['current_pp']);
+                $('#active-level').text(response['level']);
+                if (response['is_master']) {
+                    $('#active-is-master').text('\u2713');
+                } else {
+                    $('#active-is-master').text('');
+                }
+                $(event.target).blur();
+            },
+            error: (response) => {
+                console.log('Error');
+            }
+        });
+        event.preventDefault();
+    }
+});

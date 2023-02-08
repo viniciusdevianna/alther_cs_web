@@ -411,11 +411,36 @@ class AvailablePath(models.Model):
         on_delete=models.CASCADE
     )
 
+    level_thresholds = {
+        0: 1,
+        100: 2,
+        300: 3,
+        500: 4,
+        800: 5,
+        1100: 6,
+        1500: 7,
+        2000: 8,
+        2500: 9,
+        3000: 10
+    }
+
     def __str__(self) -> str:
         return f"{self.path_ID} para {self.char_ID}"
 
     def __repr__(self) -> str:
         return f"{self.path_ID} ({self.char_ID})"
+
+    def change_total_pp(self, new_pp: int) -> None:
+        diff = new_pp - self.total_pp
+        self.total_pp = new_pp
+        self.current_pp += diff
+        
+        for pp in self.level_thresholds.keys():
+            if (self.total_pp - pp) >= 0:
+                self.level = self.level_thresholds[pp]
+        
+        self.is_master = True if self.level == 10 else False
+                
 
 class AvailableSkill(models.Model):
     char_ID = models.ForeignKey(

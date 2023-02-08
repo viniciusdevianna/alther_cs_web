@@ -50,7 +50,12 @@
         </div>
     </div>    
     <div class="attributes-information">
-        <h2 class="attributes-header">Atributos</h2>
+        <div class="attributes-information" id="attributes-info-header">
+            <form action="{% url 'update_attributes' character.pk %}" id="attributes-info-form">
+                <h2 class="attributes-header">Atributos</h2>
+                <input type="submit" value="Editar">
+            </form>            
+        </div>        
         <table>
             <tr>
                 <th>Atributo</th>
@@ -103,17 +108,23 @@
                 <th>
                     <button type="button" class="roll-button action" value="{{ action.pk }}">Rolar</button>
                 </th>
-                <th>
-                    <p class="roll-result action" id="action-{{ action.pk }}"></p>
-                </th>
+                <th class="roll-result action" id="action-{{ action.pk }}"></th>
             </tr>
             {% endfor %}            
         </table>
     </div>
-    <div class="path-information">
+    <div class="path-information" id="path-selection">
         <h2>Caminhos</h2>
         <h3>Ativo:</h3>
-        <p>{{ active_path.path_ID }}</p>
+        <select class="path-information" name="path-select" id="active-path-select">
+            {% for path in available_paths %}
+                {% if path.pk == active_path.pk %}
+                    <option value="{{ path.pk }}" selected>{{ path.path_ID }}</option>
+                {% else %}
+                    <option value="{{ path.pk }}">{{ path.path_ID }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
         <table>
             <tr>
                 <th>PC Atual</th>
@@ -122,12 +133,21 @@
                 <th>Mestre</th>
             </tr>
             <tr>
-                <th>{{ active_path.current_pp }}</th>
-                <th>{{ active_path.total_pp }}</th>
-                <th>{{ active_path.level }}</th>
-                <th>{{ active_path.is_master }}</th>
+                <th id="active-current-pp">{{ active_path.current_pp }}</th>
+                <th id="active-total-pp">
+                    <input type="number" value="{{ active_path.total_pp }}">
+                </th>
+                <th id="active-level">{{ active_path.level }}</th>
+                <th id="active-is-master">
+                    {% if active_path.is_master %}
+                        &#x2713;
+                    {% endif %}
+                </th>
             </tr>
         </table>
+        <form action="{% url 'skills' character.pk %}">
+            <input type="submit" value="Aprender Habilidades">
+        </form>
     </div>
     <div class="skills-information">
         <h2>Habilidades</h2>
@@ -139,8 +159,8 @@
             </tr>            
             <tr>
                 <th>Intrínseca</th>
-                <th>{{ equipped_skills.intrinsic.name }}</th>
-                <th>{{ equipped_skills.intrinsic.description }}</th>
+                <th id="intrinsic-skill-name">{{ equipped_skills.intrinsic.name }}</th>
+                <th id="intrinsic-skill-description">{{ equipped_skills.intrinsic.description }}</th>
             </tr>
             <tr>
                 <th>Padrão 1</th>

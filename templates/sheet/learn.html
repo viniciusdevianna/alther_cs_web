@@ -30,7 +30,8 @@
         </form>
     </div>
     <div>
-        <form action="{% url 'main' character.pk %}">
+        <form action="{% url 'main' character.pk %}" method="POST">
+            {% csrf_token %}
             <button type="submit">Finalizar</button>
         </form>
     </div>    
