@@ -151,7 +151,7 @@
     </div>
     <div class="skills-information">
         <h2>Habilidades</h2>
-        <table>
+        <table id="equip-skills-table">
             <tr>
                 <th>Slot</th>
                 <th>Habilidade</th>
@@ -162,12 +162,31 @@
                 <th id="intrinsic-skill-name">{{ equipped_skills.intrinsic.name }}</th>
                 <th id="intrinsic-skill-description">{{ equipped_skills.intrinsic.description }}</th>
             </tr>
-            <tr>
-                <th>Padrão 1</th>
-                <th>{{ equipped_skills.main_1.name }}</th>
-                <th>{{ equipped_skills.main_1.description }}</th>
-            </tr>
-            <tr>
+            {% for slot, equipped_skill in equipped_skills_dict.items %}
+                <tr>
+                    <th>{{ slot }}</th>
+                    <th id="{{ slot }}-skill">
+                        <select name="{{ slot }}-skill-select" class="skill-information" data-slot="{{ slot }}">
+                            {% if equipped_skill is None %}
+                                <option value="0" selected>-------------</option>
+                            {% else %}
+                                <option value="0">-------------</option>
+                            {% endif %}
+                            {% for skill in available_skills %}
+                                {% if skill.skill_ID.category.lower in slot %}
+                                    {% if equipped_skill.pk == skill.skill_ID.pk %}
+                                        <option value="{{ skill.skill_ID.pk }}" selected>{{ skill.skill_ID.name }}</option>
+                                    {% else %}
+                                        <option value="{{ skill.skill_ID.pk }}">{{ skill.skill_ID.name }}</option>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        </th>
+                        <th id="{{ slot }}-skill-description">{{ equipped_skill.description }}</th>
+                </tr>
+            {% endfor %}
+            <!-- <tr>
                 <th>Padrão 2</th>
                 <th>{{ equipped_skills.main_2.name }}</th>
                 <th>{{ equipped_skills.main_2.description }}</th>
@@ -206,7 +225,7 @@
                 <th>Perfeita</th>
                 <th>{{ equipped_skills.perfect.name }}</th>
                 <th>{{ equipped_skills.perfect.description }}</th>
-            </tr>
+            </tr> -->
         </table>
     </div>
 

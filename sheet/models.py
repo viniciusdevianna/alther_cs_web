@@ -158,12 +158,12 @@ class Path(models.Model):
 class Skill(models.Model):
 
     class Category(models.TextChoices):
-        INTRINSIC = "ITS", _("Intrínseca")
-        GENERAL = "GEN", _("Padrão")
-        SUPPORT = "SUP", _("Suporte")
-        REACTION = "REA", _("Reação")
-        MOVEMENT = "MOV", _("Movimento")
-        PERFECT = "PER", _("Perfeita")
+        INTRINSIC = "ITS", _("Intrinsic")
+        GENERAL = "GEN", _("General")
+        SUPPORT = "SUP", _("Support")
+        REACTION = "REA", _("Reaction")
+        MOVEMENT = "MOV", _("Movement")
+        PERFECT = "PER", _("Perfect")
 
     name = models.CharField(
         db_column="SkillName",
@@ -472,28 +472,28 @@ class EquippedSkill(models.Model):
         blank=True,
         null=True
     )
-    main_1 = models.ForeignKey(
+    general_1 = models.ForeignKey(
         Skill,
         on_delete=models.CASCADE,
         related_name="+",
         blank=True,
         null=True
     )
-    main_2 = models.ForeignKey(
+    general_2 = models.ForeignKey(
         Skill,
         on_delete=models.CASCADE,
         related_name="+",
         blank=True,
         null=True
     )
-    main_3 = models.ForeignKey(
+    general_3 = models.ForeignKey(
         Skill,
         on_delete=models.CASCADE,
         related_name="+",
         blank=True,
         null=True
     )
-    main_4 = models.ForeignKey(
+    general_4 = models.ForeignKey(
         Skill,
         on_delete=models.CASCADE,
         related_name="+",

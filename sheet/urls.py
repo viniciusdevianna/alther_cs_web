@@ -12,4 +12,5 @@ urlpatterns = [
     path('manipulate/pathpoints/', views.manipulate_pathpoints, name='manipulate_pathtpoints'),
     path('update/attributes/<int:char_ID>/', views.update_attributes, name='update_attributes'),
     path('skills/<int:char_ID>/', views.skills, name='skills'),
+    path('skills/equip/', views.equip_skill, name='equip_skill'),
 ]

@@ -48,14 +48,21 @@ def main(request, char_ID):
     attributes = Attribute.objects.filter(char_ID=char_ID)
     available_paths = AvailablePath.objects.filter(char_ID=char_ID)
     active_path = available_paths.get(path_ID=character.active_path)
-    equipped_skills = EquippedSkill.objects.get(char_ID=char_ID)  
+    available_skills = AvailableSkill.objects.filter(char_ID=char_ID)
+    equipped_skills = EquippedSkill.objects.get(char_ID=char_ID)
+    equipped_skills_dict = {}
+    
+    for field in EquippedSkill._meta.get_fields()[2:]:
+        equipped_skills_dict[field.name] = getattr(equipped_skills, field.name)
 
     char_data = {
         'character': character,
         'attributes': attributes,
         'available_paths': available_paths,
         'active_path': active_path,
+        'available_skills': available_skills,
         'equipped_skills': equipped_skills,
+        'equipped_skills_dict': equipped_skills_dict,
         'actions': actions,
     }
     return render(request, 'sheet/main.html', char_data)
@@ -203,11 +210,8 @@ def create_character(request):
 
             paths = Path.objects.filter(aspiration=new_char.aspiration, tier=Path.Tier.BASIC)
             for path in paths:
-                available_path = AvailablePath(char_ID=new_char, path_ID=path, **INITIAL_PATH_DATA)                
-                skill_to_learn = Skill.objects.filter(_category=Skill.Category.INTRINSIC).get(path=path)
-                available_skill = AvailableSkill(char_ID=new_char, skill_ID=skill_to_learn)
+                available_path = AvailablePath(char_ID=new_char, path_ID=path, **INITIAL_PATH_DATA)
                 available_path.save()
-                available_skill.save()
 
             active_initial_path = AvailablePath.objects.filter(char_ID=new_char).get(path_ID=new_char.active_path)
             active_initial_path.total_pp = 100
@@ -282,7 +286,7 @@ def skills(request, char_ID):
         learned_skills = []
     
     active_path = AvailablePath.objects.filter(char_ID=char_ID).get(path_ID=character.active_path)
-    active_path_skills = Skill.objects.filter(path=character.active_path)
+    active_path_skills = Skill.objects.filter(path=character.active_path).exclude(_category=Skill.Category.INTRINSIC)
 
     if request.method == 'POST':
         skill_ID = int(request.POST.get('skill_ID'))
@@ -311,3 +315,27 @@ def skills(request, char_ID):
     }
 
     return render(request, 'sheet/learn.html', skills_data)
+
+
+def equip_skill(request):
+    if request.accepts('application/json') and request.method == 'GET':
+        char_ID = int(request.GET.get('char_ID'))
+        slot = request.GET.get('slot')
+        skill_ID = int(request.GET.get('skill_ID'))
+        
+        character = Character.objects.get(pk=char_ID)
+        equipped_skills = EquippedSkill.objects.get(char_ID=character)
+
+        if skill_ID == 0:
+            skill_to_equip = None
+        else:
+            skill_to_equip = Skill.objects.get(pk=skill_ID)
+
+        setattr(equipped_skills, slot, skill_to_equip)
+
+        equipped_skills.save()
+
+        return JsonResponse({'skill_description': skill_to_equip.description if skill_to_equip else ''})
+
+    return redirect('home')
+        

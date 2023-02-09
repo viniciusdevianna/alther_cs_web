@@ -39,11 +39,37 @@ function updatePathInfo(event) {
         },
         success: (response) => {
             $('#active-current-pp').text(response['current_pp']);
-            $('#active-total-pp').text(response['total_pp']);
+            $('#active-total-pp input').val(response['total_pp']);
             $('#active-level').text(response['level']);
-            $('#active-is-master').text(response['is-master']);
+            if (response['is_master']) {
+                $('#active-is-master').text('\u2713');
+            } else {
+                $('#active-is-master').text('');
+            }
             $('#intrinsic-skill-name').text(response['skill_name']);
             $('#intrinsic-skill-description').text(response['skill_description']);
+        },
+        error: (response) => {
+            console.log('Error');
+        }
+    });
+    event.preventDefault();
+}
+
+function equipSkill(event) {
+    const charID = $('.main-information').data('character');
+    const slot = $(event.target).data('slot');
+    const skillID = $(event.target).val();
+    $.ajax({
+        type: 'GET',
+        url: '/sheet/skills/equip/',
+        data: {
+            'char_ID': charID,
+            'slot': slot,
+            'skill_ID': skillID
+        },
+        success: (response) => {
+            $(`#${slot}-skill-description`).text(response['skill_description']);
         },
         error: (response) => {
             console.log('Error');
@@ -178,4 +204,10 @@ $('#active-total-pp').on('keydown', 'input', (event) => {
         });
         event.preventDefault();
     }
+});
+
+$.each([$('#equip-skills-table select')], () => {
+    $(this).on('change', (event) => {
+       equipSkill(event);
+    })
 });
