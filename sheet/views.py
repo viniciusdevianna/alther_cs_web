@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from sheet.models import *
-from sheet.forms import CreateCharForm, AttributeForm
+from sheet.forms import CreateCharForm, AttributeForm, ActionForm
 
 # Consts to take care of default values for character creation, have to incroporate them in the model lately
 INITAL_CHAR_DATA = {
@@ -330,6 +330,60 @@ def new_path(request, char_ID):
     }
 
     return render(request, 'sheet/newpath.html', paths_data)
+
+def update_bg(request, char_ID):
+    character = Character.objects.get(pk=char_ID)
+
+    if request.method == 'POST':
+        form = CreateCharForm(request.POST, instance=character)
+        form.save()
+
+        return redirect('main', char_ID=char_ID)
+    
+    form = CreateCharForm(instance=character)
+
+    form_data = {
+        'form': form,
+        'character': character
+    }
+
+    return render(request, 'sheet/bg.html', form_data)
+
+def update_actions(request, char_ID):
+    actions = Action.objects.filter(char_ID=char_ID)    
+
+    if request.method == 'POST':
+        forms = tuple(
+            ActionForm(
+                request.POST, instance=this_action, prefix=f'form{form_number}'
+            ) for form_number, this_action in enumerate(actions) 
+        )
+
+        check_forms = (form.is_valid() for form in forms)
+        if all(check_forms):
+            for form in forms:
+                form.save()
+            messages.success(request, 'Ações atualizadas')
+            return redirect('main', char_ID=char_ID)
+        else:
+            messages.error(request, 'Ações inválidas')
+            return redirect('update_actions', char_ID=char_ID)
+
+    character = Character.objects.get(pk=char_ID)
+    
+    forms = (
+        ActionForm(
+            instance=this_action, prefix=f'form{form_number}'
+        ) for form_number, this_action in enumerate(actions)
+    )
+
+    form_data = {
+        'forms': forms,
+        'character': character
+    }
+
+    return render(request, 'sheet/actions.html', form_data)
+
 
 # Views related to manipulating skills
 def skills(request, char_ID):

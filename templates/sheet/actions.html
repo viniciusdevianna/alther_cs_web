@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ações</title>
+</head>
+<body>
+    {% include 'partials/_alerts.html' %}
+    <h1>Ações de {{ character.name }}</h1>
+    <form action="{% url 'update_actions' character.pk %}" method="POST">
+        {% csrf_token %}
+        <div>
+            {% for form in forms %}
+                <p>{{ form.instance.type }}</p>
+                {% for field in form.visible_fields %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+        </div>
+        {% endfor %}
+        {% endfor %}
+        <div>
+            <button type="submit">Atualizar</button>
+        </div>
+    </form>
+</body>
+</html>

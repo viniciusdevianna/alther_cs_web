@@ -22,6 +22,11 @@
     <div class="school-information">
         <h3>{{ character.school }}</h3>
     </div>
+    <div>
+        <form action="{% url 'update_bg' character.pk %}" method="GET">
+            <input type="submit" value="Editar">
+        </form>
+    </div>
     <div class="level-information">
         <p class="char-level">Nível {{ character.level }}</p>
         <span>XP</span>   
@@ -55,7 +60,7 @@
                 <h2 class="attributes-header">Atributos</h2>
                 <input type="submit" value="Editar">
             </form>            
-        </div>        
+        </div>
         <table>
             <tr>
                 <th>Atributo</th>
@@ -80,7 +85,12 @@
         </table>
     </div>
     <div class="actions-information">
-        <h2>Ações</h2>
+        <div class="actions-information" id="actions-info-header">
+            <form action="{% url 'update_actions' character.pk %}" id="actions-info-form">
+                <h2 class="actions-header">Ações</h2>
+                <input type="submit" value="Editar">
+            </form>            
+        </div>
         <table>
             <tr>
                 <th>Ação</th>
