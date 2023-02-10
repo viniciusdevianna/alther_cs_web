@@ -120,6 +120,7 @@ class Aspiration(models.Model):
 class Path(models.Model):
 
     class Tier(models.IntegerChoices):
+        PROVISIONAL = 0
         BASIC = 1
         ADVANCED = 2
         SPECIALIST = 3

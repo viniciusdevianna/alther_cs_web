@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
-from django.core import serializers
 from sheet.models import *
 from sheet.forms import CreateCharForm, AttributeForm
 
+# Consts to take care of default values for character creation, have to incroporate them in the model lately
 INITAL_CHAR_DATA = {
     'level': 1,
     'xp_total': 0.,
@@ -38,10 +38,16 @@ INITIAL_ACTION_DATA = {
     'flat_penalty': 0
 }
 
-def main(request, char_ID):
+def main(request, char_ID=None):
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não reconhecido')
         return redirect('login')
+
+    if request.method == 'POST':
+        char_ID = request.POST.get('character')
+    
+    if char_ID is None:
+        return redirect('pick_character')
 
     character = Character.objects.get(id=char_ID)
     actions = Action.objects.filter(char_ID=char_ID)
@@ -65,8 +71,9 @@ def main(request, char_ID):
         'equipped_skills_dict': equipped_skills_dict,
         'actions': actions,
     }
-    return render(request, 'sheet/main.html', char_data)
 
+    return render(request, 'sheet/main.html', char_data)
+    
 # Views that manipulate data in the main sheet view
 def roll_action(request):
     if request.accepts('application/json') and request.method == 'GET':
@@ -169,6 +176,19 @@ def change_active_path(request):
     
     return redirect('home')
 
+def update_text(request):
+    if request.accepts("application/json") and request.method == 'GET':
+        char_ID = int(request.GET.get('char_ID'))
+        info_to_update = request.GET.get('info_to_update')
+        new_text = request.GET.get('new_text')
+
+        character = Character.objects.get(pk=char_ID)
+        setattr(character, info_to_update, new_text)
+        character.save()
+
+        return JsonResponse({'response': 'success'})
+    
+    return redirect('home')
 
 def manipulate_pathpoints(request):
     if request.accepts("application/json") and request.method == 'GET':
@@ -190,7 +210,7 @@ def manipulate_pathpoints(request):
     
     return redirect('home')
 
-
+# Views for new sheet creation and editing char information outside of main sheet page
 def create_character(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não reconhecido')
@@ -204,6 +224,7 @@ def create_character(request):
         if form.is_valid():
             player = request.user
             new_char = Character(player_ID=player, **INITAL_CHAR_DATA)
+            new_char.active_path = Path.objects.get(pk='NOV')
             form = CreateCharForm(request.POST, instance=new_char)
 
             new_char = form.save()
@@ -212,11 +233,11 @@ def create_character(request):
             for path in paths:
                 available_path = AvailablePath(char_ID=new_char, path_ID=path, **INITIAL_PATH_DATA)
                 available_path.save()
-
-            active_initial_path = AvailablePath.objects.filter(char_ID=new_char).get(path_ID=new_char.active_path)
-            active_initial_path.total_pp = 100
-            active_initial_path.current_pp = active_initial_path.total_pp
-            active_initial_path.save()
+                
+            active_initial_path = AvailablePath.objects.filter(char_ID=new_char).first()
+            if active_initial_path is not None:
+                new_char.active_path = active_initial_path.path_ID
+                new_char.save()        
 
             intrinsic_skill = Skill.objects.filter(_category=Skill.Category.INTRINSIC).get(path=new_char.active_path)
             equipped_skill = EquippedSkill(char_ID=new_char, intrinsic=intrinsic_skill)
@@ -226,7 +247,7 @@ def create_character(request):
                 new_action = Action(type=action_type, char_ID=new_char, **INITIAL_ACTION_DATA)
                 new_action.save()
             
-            return redirect('update_attributes', char_ID=new_char.id)
+            return redirect('new_path', char_ID=new_char.pk)
 
     return render(request, 'sheet/create.html', {'form': form})
 
@@ -238,12 +259,12 @@ def update_attributes(request, char_ID):
     character = Character.objects.get(id=char_ID)
     if Attribute.objects.filter(char_ID=char_ID).exists():
         attributes = Attribute.objects.filter(char_ID=char_ID)
-        redirect_to = 'main'
+        redirect_to = {'to': 'main', 'char_ID': char_ID}
     else:
         attributes = (
             Attribute(char_ID=character, type=this_type) for this_type in Attribute.AttrTypes
         )
-        redirect_to = 'skills'
+        redirect_to = {'to': 'skills', 'char_ID': char_ID}
 
     if request.method == 'POST':
         forms = tuple(
@@ -257,7 +278,7 @@ def update_attributes(request, char_ID):
             for form in forms:
                 form.save()           
             messages.success(request, 'Atributos atualizados')
-            return redirect(redirect_to, char_ID=char_ID)
+            return redirect(**redirect_to)
         else:
             messages.error(request, 'Atributos inválidos')
             return redirect('update_attributes', char_ID=char_ID)
@@ -275,6 +296,42 @@ def update_attributes(request, char_ID):
     
     return render(request, 'sheet/attributes.html', form_data)
 
+def new_path(request, char_ID):
+    character = Character.objects.get(pk=char_ID)
+
+    if request.method == 'POST':
+        path_ID = request.POST.get('path_chosen')
+        path = Path.objects.get(pk=path_ID)
+
+        character.active_path = path
+
+        char_path = AvailablePath.objects.filter(char_ID=character).get(path_ID=path)
+        char_path.total_pp = 100
+        char_path.current_pp = char_path.total_pp
+
+        intrinsic_skill = Skill.objects.filter(_category=Skill.Category.INTRINSIC).get(path=path)
+        equipped_skill = EquippedSkill.objects.get(char_ID=character)
+
+        equipped_skill.intrinsic = intrinsic_skill
+
+        character.save()
+        char_path.save()
+        equipped_skill.save()
+
+        return redirect('update_attributes', char_ID=char_ID)
+
+    available_paths = [path.path_ID for path in AvailablePath.objects.filter(char_ID=char_ID)]
+    aspiration_paths = Path.objects.filter(aspiration=character.aspiration)
+
+    paths_data = {
+        'character': char_ID,
+        'available_paths': available_paths,
+        'aspiration_paths': aspiration_paths
+    }
+
+    return render(request, 'sheet/newpath.html', paths_data)
+
+# Views related to manipulating skills
 def skills(request, char_ID):
     character = Character.objects.get(id=char_ID)
 
@@ -285,7 +342,7 @@ def skills(request, char_ID):
     else:
         learned_skills = []
     
-    active_path = AvailablePath.objects.filter(char_ID=char_ID).get(path_ID=character.active_path)
+    active_path = AvailablePath.objects.filter(char_ID=character).get(path_ID=character.active_path)
     active_path_skills = Skill.objects.filter(path=character.active_path).exclude(_category=Skill.Category.INTRINSIC)
 
     if request.method == 'POST':

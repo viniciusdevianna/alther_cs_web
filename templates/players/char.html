@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolher Personagem</title>
+</head>
+<body>
+    <div>
+        <h1>Escolha seu Personagem, {{ request.user.username }}</h1>
+    </div>
+    <div>
+        <form action="{% url 'main' %}" method="POST">
+            {% csrf_token %}
+            {% for character in characters %}
+                <button type="submit" value="{{ character.pk }}" name="character">{{ character.name }}</button>
+            {% endfor %}
+        </form>
+    </div>
+    <div>
+        <form action="{% url 'create' %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" name="create" id="button-create-character" value="Novo Personagem">
+        </form>
+    </div>
+</body>
+</html>

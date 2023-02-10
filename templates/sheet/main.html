@@ -185,64 +185,20 @@
                         </th>
                         <th id="{{ slot }}-skill-description">{{ equipped_skill.description }}</th>
                 </tr>
-            {% endfor %}
-            <!-- <tr>
-                <th>Padrão 2</th>
-                <th>{{ equipped_skills.main_2.name }}</th>
-                <th>{{ equipped_skills.main_2.description }}</th>
-            </tr>
-            <tr>
-                <th>Padrão 3</th>
-                <th>{{ equipped_skills.main_3.name }}</th>
-                <th>{{ equipped_skills.main_3.name }}</th>
-            </tr>
-            <tr>
-                <th>Padrão 4</th>
-                <th>{{ equipped_skills.main_4.name }}</th>
-                <th>{{ equipped_skills.main_4.description }}</th>
-            </tr>
-            <tr>
-                <th>Suporte 1</th>
-                <th>{{ equipped_skills.support_1.name }}</th>
-                <th>{{ equipped_skills.support_1.description }}</th>
-            </tr>
-            <tr>
-                <th>Suporte 2</th>
-                <th>{{ equipped_skills.support_2.name }}</th>
-                <th>{{ equipped_skills.support_2.description }}</th>
-            </tr>
-            <tr>
-                <th>Reação</th>
-                <th>{{ equipped_skills.reaction.name }}</th>
-                <th>{{ equipped_skills.reaction.description }}</th>
-            </tr>
-            <tr>
-                <th>Movimento</th>
-                <th>{{ equipped_skills.movement.name }}</th>
-                <th>{{ equipped_skills.movement.description }}</th>
-            </tr>
-            <tr>
-                <th>Perfeita</th>
-                <th>{{ equipped_skills.perfect.name }}</th>
-                <th>{{ equipped_skills.perfect.description }}</th>
-            </tr> -->
+            {% endfor %}           
         </table>
     </div>
 
     <div class="miscelanous-information">
-        <div class="inventory-information">
-            <label for="input-coin" class="inventory-information">Moeda: </label>
-            <input type="text" id="input-coin" class="inventory-information" value="{{ character.coin }}">
-            <label for="input-inventory" class="inventory-information">Inventário</label>
-            <textarea class="inventory-information" id="input-inventory" rows="10" cols="50">
-                {{ character.inventory }}
-            </textarea>
+        <div class="inventory">
+            <label for="input-coin" class="inventory">Moeda: </label>
+            <input type="text" id="input-coin" class="inventory" value="{{ character.coin }}">
+            <label for="input-inventory" class="inventory">Inventário</label>
+            <textarea class="inventory" id="input-inventory" rows="10" cols="50">{{ character.inventory }}</textarea>
         </div>
         <div class="annotations">
             <label for="input-annotations" class="annotations">Anotações: </label>
-            <textarea id="input-annotations" cols="50" rows="10" class="annotations">
-                {{ character.annotations }}
-            </textarea>
+            <textarea id="input-annotations" cols="50" rows="10" class="annotations">{{ character.annotations }}</textarea>
         </div>
     </div>
 

@@ -1,3 +1,6 @@
+// Character identification
+const charID = $('.main-information').data('character');
+
 function updateRollResultBox(rollResult, actionID) {
     const rollBox = $(`#action-${actionID}`);
     rollBox.text(rollResult);
@@ -5,7 +8,6 @@ function updateRollResultBox(rollResult, actionID) {
 
 function updateBasicInfo(selector, infoToUpdate, event) {
     if (event.which == 13) {
-        const charID = $('.main-information').data('character');
         const newValue = $(event.target).val();
         $.ajax({
             type: 'GET',
@@ -27,8 +29,7 @@ function updateBasicInfo(selector, infoToUpdate, event) {
     }
 }
 
-function updatePathInfo(event) {
-    const charID = $('.main-information').data('character');
+function updatePathInfo(event) {    
     const activePath = $(event.target).val();
     $.ajax({
         type: 'GET',
@@ -56,8 +57,28 @@ function updatePathInfo(event) {
     event.preventDefault();
 }
 
-function equipSkill(event) {
-    const charID = $('.main-information').data('character');
+function updateInventoryAndAnnotations(event) {
+    const newText = $(event.target).val();
+    const infoToUpdate = $(event.target).attr('class');
+    $.ajax({
+        type: 'GET',
+        url: '/sheet/update/text/',
+        data: {
+            'char_ID': charID,
+            'info_to_update': infoToUpdate,
+            'new_text': newText
+        },
+        success: (response) => {
+            $(event.target).blur();
+        },
+        error: (response) => {
+            console.log('Error')
+        }
+    });
+    event.preventDefault();
+}
+
+function equipSkill(event) {    
     const slot = $(event.target).data('slot');
     const skillID = $(event.target).val();
     $.ajax({
@@ -98,8 +119,7 @@ $('.roll-button').on('click', (event) => {
 
 $('#input-char-xp').on('keydown', (event) => {
     if (event.which == 13) {
-        const totalXP = $(event.target).val();
-        const charID = $('.main-information').data('character');
+        const totalXP = $(event.target).val();        
         $.ajax({
             type: 'GET',
             url: '/sheet/level_up/',
@@ -206,8 +226,16 @@ $('#active-total-pp').on('keydown', 'input', (event) => {
     }
 });
 
-$.each([$('#equip-skills-table select')], () => {
-    $(this).on('change', (event) => {
-       equipSkill(event);
+$.each([$('#equip-skills-table select')], (index, element) => {
+    element.on('change', (event) => {        
+        equipSkill(event);
     })
 });
+
+$('#input-inventory').on('change', (event) => {
+    updateInventoryAndAnnotations(event);
+})
+
+$('#input-annotations').on('change', (event) => {
+    updateInventoryAndAnnotations(event);
+})

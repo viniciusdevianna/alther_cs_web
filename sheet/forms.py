@@ -1,11 +1,11 @@
 from django import forms
-from sheet.models import Character, Path, Attribute
+from sheet.models import Character, Attribute, Aspiration
 
 class CreateCharForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreateCharForm, self).__init__(*args, **kwargs)
-        self.fields['active_path'].queryset = Path.objects.filter(
-            tier=1
+        self.fields['aspiration'].queryset = Aspiration.objects.exclude(
+            pk='PRO'
         )
         
     class Meta:
@@ -19,7 +19,6 @@ class CreateCharForm(forms.ModelForm):
             'age',
             'school',
             'aspiration',
-            'active_path',
         ]
 
 class AttributeForm(forms.ModelForm):

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Caminho</title>
+</head>
+<body>
+    <div>
+        <h1>Caminhos para {{ character.name }}</h1>
+    </div>    
+    <div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% for path in aspiration_paths %}
+                {% if path in available_paths %}
+                    <h2>{{ path.name }}</h2>
+                    <p>{{ path.tier }}</p>
+                    <p>Maestria: {{ path.master_bonus }}</p>
+                    <button type="submit" name="path_chosen" value="{{ path.pk }}">Escolher</button>
+                {% else %}
+                    <h2>{{ path.name }}</h2>
+                    <h3>{{ path.requirements }}</h3>
+                {% endif %}
+            {% endfor %}
+        </form>               
+    </div>
+</body>
+</html>

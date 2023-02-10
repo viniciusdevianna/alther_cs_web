@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import auth, messages
 from django.contrib.auth.models import User
 from players.forms import LoginForm, SignupForm
+from sheet.models import Character
 
 def login(request):
     form = LoginForm()
@@ -21,7 +22,7 @@ def login(request):
             if user is not None:
                 auth.login(request, user)
                 messages.success(request, f'{username} logado com sucesso')
-                return redirect('create')
+                return redirect('pick_character')
             else:
                 messages.error(request, 'Informações erradas de login')
                 return redirect('login')
@@ -59,3 +60,13 @@ def logout(request):
     auth.logout(request)
     messages.success(request, f"Logout realizado com sucesso")
     return redirect('index')
+
+def pick_character(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Usuário não reconhecido')
+        return redirect('login')
+        
+    player = request.user
+    characters = Character.objects.filter(player_ID=player)
+
+    return render(request, 'players/char.html', {'characters': characters})
