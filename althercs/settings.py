@@ -107,6 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Login information
+LOGIN_URL = '/players/login/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

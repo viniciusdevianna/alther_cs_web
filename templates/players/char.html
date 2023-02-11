@@ -24,5 +24,11 @@
             <input type="submit" name="create" id="button-create-character" value="Novo Personagem">
         </form>
     </div>
+    <div>
+        <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Logout">
+        </form>
+    </div>
 </body>
 </html>

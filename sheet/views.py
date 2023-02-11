@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from sheet.models import *
 from sheet.forms import CreateCharForm, AttributeForm, ActionForm
@@ -38,11 +39,12 @@ INITIAL_ACTION_DATA = {
     'flat_penalty': 0
 }
 
-def main(request, char_ID=None):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Usuário não reconhecido')
-        return redirect('login')
+# Authentication functions
+def owner_test(user: User, character: Character):
+    return user == character.player_ID
 
+@login_required
+def main(request, char_ID=None):
     if request.method == 'POST':
         char_ID = request.POST.get('character')
     
@@ -50,6 +52,9 @@ def main(request, char_ID=None):
         return redirect('pick_character')
 
     character = Character.objects.get(id=char_ID)
+    if not owner_test(request.user, character):
+        return redirect('pick_character')
+
     actions = Action.objects.filter(char_ID=char_ID)
     attributes = Attribute.objects.filter(char_ID=char_ID)
     available_paths = AvailablePath.objects.filter(char_ID=char_ID)
@@ -133,7 +138,6 @@ def update_basic(request):
     
     return redirect('home')
 
-
 def manipulate_attribute(request):
     if request.accepts("application/json") and request.method == 'GET':
         attr_ID = int(request.GET.get('attr_ID'))
@@ -211,11 +215,8 @@ def manipulate_pathpoints(request):
     return redirect('home')
 
 # Views for new sheet creation and editing char information outside of main sheet page
-def create_character(request):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Usuário não reconhecido')
-        return redirect('login')
-
+@login_required
+def create_character(request):    
     form = CreateCharForm()
 
     if request.method == 'POST':
@@ -251,11 +252,8 @@ def create_character(request):
 
     return render(request, 'sheet/create.html', {'form': form})
 
+@login_required
 def update_attributes(request, char_ID):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Usuário não reconhecido')
-        return redirect('login')
-
     character = Character.objects.get(id=char_ID)
     if Attribute.objects.filter(char_ID=char_ID).exists():
         attributes = Attribute.objects.filter(char_ID=char_ID)
@@ -296,6 +294,7 @@ def update_attributes(request, char_ID):
     
     return render(request, 'sheet/attributes.html', form_data)
 
+@login_required
 def new_path(request, char_ID):
     character = Character.objects.get(pk=char_ID)
 
@@ -331,6 +330,7 @@ def new_path(request, char_ID):
 
     return render(request, 'sheet/newpath.html', paths_data)
 
+@login_required
 def update_bg(request, char_ID):
     character = Character.objects.get(pk=char_ID)
 
@@ -349,6 +349,7 @@ def update_bg(request, char_ID):
 
     return render(request, 'sheet/bg.html', form_data)
 
+@login_required
 def update_actions(request, char_ID):
     actions = Action.objects.filter(char_ID=char_ID)    
 
@@ -384,8 +385,8 @@ def update_actions(request, char_ID):
 
     return render(request, 'sheet/actions.html', form_data)
 
-
 # Views related to manipulating skills
+@login_required
 def skills(request, char_ID):
     character = Character.objects.get(id=char_ID)
 
@@ -426,7 +427,6 @@ def skills(request, char_ID):
     }
 
     return render(request, 'sheet/learn.html', skills_data)
-
 
 def equip_skill(request):
     if request.accepts('application/json') and request.method == 'GET':

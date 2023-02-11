@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import auth, messages
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from players.forms import LoginForm, SignupForm
 from sheet.models import Character
 
@@ -56,16 +57,14 @@ def signup(request):
 
     return render(request, 'players/signup.html', {"form": form})
 
+@login_required
 def logout(request):
     auth.logout(request)
     messages.success(request, f"Logout realizado com sucesso")
     return redirect('index')
 
-def pick_character(request):
-    if not request.user.is_authenticated:
-        messages.error(request, 'Usuário não reconhecido')
-        return redirect('login')
-        
+@login_required
+def pick_character(request):        
     player = request.user
     characters = Character.objects.filter(player_ID=player)
 

@@ -10,7 +10,11 @@
     {% include 'partials/_alerts.html' %}
     <h1>Bem-vindo a Alther!</h1>
     <a href="{% url 'pick_character' %}">Ficha</a>
-    <a href="{% url 'login' %}">Login</a>
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+    {% endif %}
     <a href="{% url 'signup' %}">Cadastro</a>
 </body>
 </html>
