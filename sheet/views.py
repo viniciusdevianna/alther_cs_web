@@ -385,6 +385,51 @@ def update_actions(request, char_ID):
 
     return render(request, 'sheet/actions.html', form_data)
 
+def evolve(request, char_ID):
+    character = Character.objects.get(pk=char_ID)
+    actions = Action.objects.filter(char_ID=character)
+    attributes = Attribute.objects.filter(char_ID=character)    
+
+    data = {
+        'character': character,
+        'attributes': attributes,
+        'actions': actions
+    }
+
+    return render(request, 'sheet/evolve.html', data)
+
+def upgrade(request):
+    if request.accepts("application/json") and request.method == 'GET':
+        char_ID = int(request.GET.get('char_ID'))
+        upgrade_bought = request.GET.get('upgrade_bought')
+        action_to_take = int(request.GET.get('action_to_take'))
+
+        character = Character.objects.get(pk=char_ID)
+        attributes = Attribute.objects.filter(char_ID=character)
+        actions = Action.objects.filter(char_ID=character)
+
+        if upgrade_bought in Attribute.AttrTypes:
+            print(upgrade_bought)
+            attribute = attributes.get(_type=upgrade_bought)
+            attribute.total_value += action_to_take
+            attribute.save()
+            return JsonResponse({'result': attribute.total_value})
+        elif upgrade_bought in Action.ActionTypes:
+            dice = request.GET.get('dice')
+            action = actions.get(_type=upgrade_bought)
+            current = getattr(action, dice)
+            setattr(action, dice, current + action_to_take)
+        elif upgrade_bought == 'movement' or upgrade_bought == 'main':
+            current = getattr(character, f'{upgrade_bought}_actions')
+            setattr(character, f'{upgrade_bought}_actions', current + action_to_take)
+        else:
+            messages.error(request, 'Error')
+            return redirect('evolve', char_ID=character.pk)
+
+        return JsonResponse({'success': 0})
+    
+    return redirect('home')
+
 # Views related to manipulating skills
 @login_required
 def skills(request, char_ID):

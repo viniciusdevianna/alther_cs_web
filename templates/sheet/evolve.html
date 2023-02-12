@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evoluir</title>
+</head>
+<body>
+    <div class="main-information" data-character="{{ character.pk }}">
+        <h1>Evoluindo {{ character.name }}</h1>
+        <h2>XP Disponível: {{ character.xp_current }}</h2>
+    </div>
+    <div class="attributes-information">
+        <div>
+            <h2>Atributos</h2>
+            <h3>1 ponto: 400 XP Treinamento em Perícia: 500 XP</h3>
+        </div>
+        <table class="attributes-table">
+            <tr>
+                <th>Atributo</th>
+                <th></th>
+                <th>Total</th>
+                <th></th>
+                <th></th>
+                <th>Treino</th>
+                <th></th>
+            </tr>
+            {% for attribute in attributes %}
+            <tr>
+                <td>{{ attribute.type }}</td>
+                <td><button class="button-upgrade-attr" value="{{ attribute.pk }}" id="decrement-{{ attribute.type }}">-</button></td>
+                <td>{{ attribute.total_value }}</td>
+                <td><button class="button-upgrade-attr" value="{{ attribute.pk }}" id="increment-{{ attribute.type }}">+</button></td>
+                <td><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="untrain-{{ attribute.type }}">-</button></td>
+                <td>{{ attribute.training_level }}</td>
+                <td><button class="button-upgrade-attr" value="{{ attribute.pk }}" id="train-{{ attribute.type }}">+</button></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div>
+        <div>
+            <h2>Ações</h2>
+            <h3>1d4: 200 XP 1d6: 300 XP 1d8: 400 XP 1d10: 500 XP 1d12: 600 XP 1d20: 800 XP</h3>
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <th>Ação</th>
+                    <th></th>
+                    <th>d4</th>
+                    <th></th>
+                    <th></th>
+                    <th>d6</th>
+                    <th></th>
+                    <th></th>
+                    <th>d8</th>
+                    <th></th>
+                    <th></th>
+                    <th>d10</th>
+                    <th></th>
+                    <th></th>
+                    <th>d12</th>
+                    <th></th>
+                    <th></th>
+                    <th>d20</th>
+                    <th></th>
+                </tr>
+                {% for action in actions %}
+                <tr>
+                    <td>{{ action.type }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d4">-</button></td>
+                    <td>{{ action.nd4 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d4">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d6">-</button></td>
+                    <td>{{ action.nd6 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d6">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d8">-</button></td>
+                    <td>{{ action.nd8 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d8">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d10">-</button></td>
+                    <td>{{ action.nd10 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d10">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d12">-</button></td>
+                    <td>{{ action.nd12 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d12">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d20">-</button></td>
+                    <td>{{ action.nd20 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d20">+</button></td>
+                </tr>
+                {% endfor %}         
+            </table>
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <th>Ações de Movimento</th>
+                    <td>{{ character.movement_actions }}</td>
+                    <td>
+                        <button value="{{ character.pk }}" name="movement-increase">2000 XP</button>
+                    </td>
+                    <td>
+                        <button value="{{ character.pk }}" name="movement-decrease">Desfazer</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Ações Padrão</th>
+                    <td>{{ character.main_actions }}</td>
+                    <td>
+                        <button value="{{ character.pk }}" name="main-increase">3000 XP</button>
+                    </td>
+                    <td>
+                        <button value="{{ character.pk }}" name="main-decrease">Desfazer</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div>
+        <form action="{% url 'main' character.pk %}">
+            <input type="submit" value="Finalizar">
+        </form>
+    </div>
+
+    {% block javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="{% static '/js/upgrade.js' %}"></script>
+    {% endblock javascript %}
+</body>
+</html>

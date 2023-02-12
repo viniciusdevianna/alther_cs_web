@@ -16,6 +16,8 @@ urlpatterns = [
     path('manipulate/pathpoints/', views.manipulate_pathpoints, name='manipulate_pathtpoints'),
     path('update/attributes/<int:char_ID>/', views.update_attributes, name='update_attributes'),
     path('update/text/', views.update_text, name='update_text'),
+    path('evolve/<int:char_ID>/', views.evolve, name='evolve'),
+    path('upgrade/', views.upgrade, name='upgrade'),
     path('skills/<int:char_ID>/', views.skills, name='skills'),
     path('skills/equip/', views.equip_skill, name='equip_skill'),
 ]

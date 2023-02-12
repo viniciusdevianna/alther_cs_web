@@ -32,6 +32,11 @@
         <span>XP</span>   
         <p class="char-xp" id="char-xp-current">{{ character.xp_current }} / </p>
         <input type="number" value="{{ character.xp_total }}" class="char-xp" id="input-char-xp">
+        <div>
+            <form action="{% url 'evolve' character.pk %}">
+                <input type="submit" value="Evoluir">
+            </form>
+        </div>
     </div>
     <div class="health-information">
         <div class="unbalance-points">
@@ -47,9 +52,9 @@
                     <th>Temp</th>
                 </tr>
                 <tr>
-                    <th><input type="text" class="health-points" value="{{ character.hp_current }}" id="input-health-points-current"></th>
-                    <th><input type="text" class="health-points" value="{{ character.hp_total }}" id="input-health-points-total"></th>
-                    <th><input type="text" class="health-points" value="{{ character.hp_temp }}" id="input-health-points-temp"></th>
+                    <td><input type="text" class="health-points" value="{{ character.hp_current }}" id="input-health-points-current"></td>
+                    <td><input type="text" class="health-points" value="{{ character.hp_total }}" id="input-health-points-total"></td>
+                    <td><input type="text" class="health-points" value="{{ character.hp_temp }}" id="input-health-points-temp"></td>
                 </tr>
             </table>
         </div>
@@ -73,13 +78,13 @@
             </tr>
             {% for attribute in attributes %}
             <tr>
-                <th>{{ attribute.type }}</th>
-                <th><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="increment-{{ attribute.type }}">+</button></th>
-                <th id="current-{{ attribute.pk }}">{{ attribute.current_value }}</th>
-                <th><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="decrement-{{ attribute.type }}">-</button></th>
-                <th id="total-{{ attribute.pk }}">{{ attribute.total_value }}</th>
-                <th>{{ attribute.temp_value }}</th>
-                <th>{{ attribute.training_level }}</th>
+                <td>{{ attribute.type }}</td>                
+                <td><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="decrement-{{ attribute.type }}">-</button></td>
+                <td id="current-{{ attribute.pk }}">{{ attribute.current_value }}</td>
+                <td><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="increment-{{ attribute.type }}">+</button></td>
+                <td id="total-{{ attribute.pk }}">{{ attribute.total_value }}</td>
+                <td>{{ attribute.temp_value }}</td>
+                <td>{{ attribute.training_level }}</td>
             </tr>
             {% endfor %}            
         </table>
@@ -106,19 +111,19 @@
             </tr>
             {% for action in actions %}
             <tr>
-                <th>{{ action.type }}</th>
-                <th>{{ action.nd4 }}</th>
-                <th>{{ action.nd6 }}</th>
-                <th>{{ action.nd8 }}</th>
-                <th>{{ action.nd10 }}</th>
-                <th>{{ action.nd12 }}</th>
-                <th>{{ action.nd20 }}</th>
-                <th>{{ action.flat_bonus }}</th>
-                <th>{{ action.flat_penalty }}</th>        
-                <th>
+                <td>{{ action.type }}</td>
+                <td>{{ action.nd4 }}</td>
+                <td>{{ action.nd6 }}</td>
+                <td>{{ action.nd8 }}</td>
+                <td>{{ action.nd10 }}</td>
+                <td>{{ action.nd12 }}</td>
+                <td>{{ action.nd20 }}</td>
+                <td>{{ action.flat_bonus }}</td>
+                <td>{{ action.flat_penalty }}</td>        
+                <td>
                     <button type="button" class="roll-button action" value="{{ action.pk }}">Rolar</button>
-                </th>
-                <th class="roll-result action" id="action-{{ action.pk }}"></th>
+                </td>
+                <td class="roll-result action" id="action-{{ action.pk }}"></td>
             </tr>
             {% endfor %}            
         </table>
@@ -143,16 +148,16 @@
                 <th>Mestre</th>
             </tr>
             <tr>
-                <th id="active-current-pp">{{ active_path.current_pp }}</th>
-                <th id="active-total-pp">
+                <td id="active-current-pp">{{ active_path.current_pp }}</td>
+                <td id="active-total-pp">
                     <input type="number" value="{{ active_path.total_pp }}">
-                </th>
-                <th id="active-level">{{ active_path.level }}</th>
-                <th id="active-is-master">
+                </td>
+                <td id="active-level">{{ active_path.level }}</td>
+                <td id="active-is-master">
                     {% if active_path.is_master %}
                         &#x2713;
                     {% endif %}
-                </th>
+                </td>
             </tr>
         </table>
         <form action="{% url 'skills' character.pk %}">
@@ -168,14 +173,14 @@
                 <th>Descrição</th>
             </tr>            
             <tr>
-                <th>Intrínseca</th>
-                <th id="intrinsic-skill-name">{{ equipped_skills.intrinsic.name }}</th>
-                <th id="intrinsic-skill-description">{{ equipped_skills.intrinsic.description }}</th>
+                <td>Intrínseca</td>
+                <td id="intrinsic-skill-name">{{ equipped_skills.intrinsic.name }}</td>
+                <td id="intrinsic-skill-description">{{ equipped_skills.intrinsic.description }}</td>
             </tr>
             {% for slot, equipped_skill in equipped_skills_dict.items %}
                 <tr>
-                    <th>{{ slot }}</th>
-                    <th id="{{ slot }}-skill">
+                    <td>{{ slot }}</td>
+                    <td id="{{ slot }}-skill">
                         <select name="{{ slot }}-skill-select" class="skill-information" data-slot="{{ slot }}">
                             {% if equipped_skill is None %}
                                 <option value="0" selected>-------------</option>
@@ -192,8 +197,8 @@
                                 {% endif %}
                             {% endfor %}
                         </select>
-                        </th>
-                        <th id="{{ slot }}-skill-description">{{ equipped_skill.description }}</th>
+                        </td>
+                        <td id="{{ slot }}-skill-description">{{ equipped_skill.description }}</td>
                 </tr>
             {% endfor %}           
         </table>
