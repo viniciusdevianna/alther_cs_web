@@ -238,25 +238,33 @@ class Character(models.Model):
     age = models.PositiveSmallIntegerField()
 
     # Game mechanics information
-    level = models.PositiveSmallIntegerField()
-    xp_total = models.PositiveIntegerField()
-    xp_current = models.PositiveIntegerField()
-    hp_total = models.IntegerField()
-    hp_current = models.IntegerField()
-    hp_temp = models.IntegerField()
-    unbalance = models.PositiveIntegerField()
-    movement_actions = models.PositiveSmallIntegerField()
-    main_actions = models.PositiveSmallIntegerField()
+    level = models.PositiveSmallIntegerField(default=1)
+    xp_total = models.PositiveIntegerField(default=0)
+    xp_current = models.PositiveIntegerField(default=0)
+    hp_total = models.IntegerField(default=10)
+    hp_current = models.IntegerField(default=10)
+    hp_temp = models.IntegerField(default=0)
+    unbalance = models.PositiveIntegerField(default=0)
+    movement_actions = models.PositiveSmallIntegerField(default=1)
+    main_actions = models.PositiveSmallIntegerField(default=1)
     active_path = models.ForeignKey(
         Path,
         on_delete=models.DO_NOTHING
     )
 
     # Narrative and other informations
-    inventory = models.TextField(blank=True)
-    annotations = models.TextField(blank=True)
+    inventory = models.TextField(blank=True, default='')
+    annotations = models.TextField(blank=True, default='')
     coin = models.CharField(
-        max_length=200
+        max_length=200,
+        default='0 valores'
+    )
+
+    movement_action_cost = models.IntegerField(
+        default=2000
+    )
+    main_action_cost = models.IntegerField(
+        default=3000
     )
 
     def __str__(self) -> str:
@@ -286,6 +294,13 @@ class Attribute(models.Model):
     char_ID = models.ForeignKey(
         Character,
         on_delete=models.CASCADE
+    )
+
+    attribute_point_cost = models.PositiveIntegerField(
+        default=400
+    )
+    training_cost = models.PositiveIntegerField(
+        default=500
     )
 
     @property
@@ -318,20 +333,29 @@ class Action(models.Model):
         max_length=1,
         choices=ActionTypes.choices
     )
-    nd4 = models.PositiveIntegerField()
-    nd6 = models.PositiveIntegerField()
-    nd8 = models.PositiveIntegerField()
-    nd10 = models.PositiveIntegerField()
-    nd12 = models.PositiveIntegerField()
-    nd20 = models.PositiveIntegerField()
-    flat_bonus = models.PositiveIntegerField()
-    flat_penalty = models.PositiveIntegerField()
+    nd4 = models.PositiveIntegerField(default=0)
+    nd6 = models.PositiveIntegerField(default=0)
+    nd8 = models.PositiveIntegerField(default=1)
+    nd10 = models.PositiveIntegerField(default=0)
+    nd12 = models.PositiveIntegerField(default=0)
+    nd20 = models.PositiveIntegerField(default=0)
+    flat_bonus = models.PositiveIntegerField(default=0)
+    flat_penalty = models.PositiveIntegerField(default=0)
     char_ID = models.ForeignKey(
         Character,
         on_delete=models.CASCADE
     )
 
     base_dice = Dice.DiceSides.D8
+
+    dice_cost = {
+        'nd4': 200,
+        'nd6': 300,
+        'nd8': 400,
+        'nd10': 500,
+        'nd12': 600,
+        'nd20': 800
+    }
 
     @property
     def type(self) -> str:
@@ -403,9 +427,9 @@ class AvailablePath(models.Model):
         Path,
         on_delete=models.CASCADE
     )
-    current_pp = models.PositiveIntegerField()
-    total_pp = models.PositiveIntegerField()
-    level = models.PositiveSmallIntegerField()
+    current_pp = models.PositiveIntegerField(default=0)
+    total_pp = models.PositiveIntegerField(default=0)
+    level = models.PositiveSmallIntegerField(default=1)
     is_master = models.BooleanField(default=False)
     char_ID = models.ForeignKey(
         Character,

@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -5,43 +6,40 @@ from django.http import JsonResponse
 from sheet.models import *
 from sheet.forms import CreateCharForm, AttributeForm, ActionForm
 
-# Consts to take care of default values for character creation, have to incroporate them in the model lately
-INITAL_CHAR_DATA = {
-    'level': 1,
-    'xp_total': 0.,
-    'xp_current': 0,
-    'hp_total': 10,
-    'hp_current': 10,
-    'hp_temp': 0,
-    'unbalance': 0,
-    'movement_actions': 1,
-    'main_actions': 1,
-    'inventory': '',
-    'annotations': '',
-    'coin': '0 valores'
-}
-
-INITIAL_PATH_DATA = {
-    'current_pp': 0,
-    'total_pp': 0,
-    'level': 1,
-    'is_master': False
-}
-
-INITIAL_ACTION_DATA = {
-    'nd4': 0,
-    'nd6': 0,
-    'nd8': 1,
-    'nd10': 0,
-    'nd12': 0,
-    'nd20': 0,
-    'flat_bonus': 0,
-    'flat_penalty': 0
-}
-
 # Authentication functions
 def owner_test(user: User, character: Character):
     return user == character.player_ID
+
+# Loading functions
+def load_char_data(character: Character) -> dict:
+    actions = Action.objects.filter(char_ID=character)
+    attributes = Attribute.objects.filter(char_ID=character)
+    available_paths = AvailablePath.objects.filter(char_ID=character)
+    active_path = available_paths.get(path_ID=character.active_path)
+    available_skills = AvailableSkill.objects.filter(char_ID=character)
+    equipped_skills = EquippedSkill.objects.get(char_ID=character)
+
+    equipped_skills_dict = load_char_equipped_skills(equipped_skills)
+    
+
+    return {
+        'character': character,
+        'attributes': attributes,
+        'available_paths': available_paths,
+        'active_path': active_path,
+        'available_skills': available_skills,
+        'equipped_skills': equipped_skills,
+        'equipped_skills_dict': equipped_skills_dict,
+        'actions': actions,
+    }
+
+def load_char_equipped_skills(skills: EquippedSkill) -> dict:
+    equipped_skills_dict = {}
+    
+    for field in EquippedSkill._meta.get_fields()[2:]:
+        equipped_skills_dict[field.name] = getattr(skills, field.name)
+
+    return equipped_skills_dict
 
 @login_required
 def main(request, char_ID=None):
@@ -55,27 +53,7 @@ def main(request, char_ID=None):
     if not owner_test(request.user, character):
         return redirect('pick_character')
 
-    actions = Action.objects.filter(char_ID=char_ID)
-    attributes = Attribute.objects.filter(char_ID=char_ID)
-    available_paths = AvailablePath.objects.filter(char_ID=char_ID)
-    active_path = available_paths.get(path_ID=character.active_path)
-    available_skills = AvailableSkill.objects.filter(char_ID=char_ID)
-    equipped_skills = EquippedSkill.objects.get(char_ID=char_ID)
-    equipped_skills_dict = {}
-    
-    for field in EquippedSkill._meta.get_fields()[2:]:
-        equipped_skills_dict[field.name] = getattr(equipped_skills, field.name)
-
-    char_data = {
-        'character': character,
-        'attributes': attributes,
-        'available_paths': available_paths,
-        'active_path': active_path,
-        'available_skills': available_skills,
-        'equipped_skills': equipped_skills,
-        'equipped_skills_dict': equipped_skills_dict,
-        'actions': actions,
-    }
+    char_data = load_char_data(character=character)    
 
     return render(request, 'sheet/main.html', char_data)
     
@@ -224,7 +202,7 @@ def create_character(request):
 
         if form.is_valid():
             player = request.user
-            new_char = Character(player_ID=player, **INITAL_CHAR_DATA)
+            new_char = Character(player_ID=player)
             new_char.active_path = Path.objects.get(pk='NOV')
             form = CreateCharForm(request.POST, instance=new_char)
 
@@ -232,7 +210,7 @@ def create_character(request):
 
             paths = Path.objects.filter(aspiration=new_char.aspiration, tier=Path.Tier.BASIC)
             for path in paths:
-                available_path = AvailablePath(char_ID=new_char, path_ID=path, **INITIAL_PATH_DATA)
+                available_path = AvailablePath(char_ID=new_char, path_ID=path)
                 available_path.save()
                 
             active_initial_path = AvailablePath.objects.filter(char_ID=new_char).first()
@@ -245,7 +223,7 @@ def create_character(request):
             equipped_skill.save()
             
             for action_type in Action.ActionTypes:
-                new_action = Action(type=action_type, char_ID=new_char, **INITIAL_ACTION_DATA)
+                new_action = Action(type=action_type, char_ID=new_char)
                 new_action.save()
             
             return redirect('new_path', char_ID=new_char.pk)
@@ -323,7 +301,7 @@ def new_path(request, char_ID):
     aspiration_paths = Path.objects.filter(aspiration=character.aspiration)
 
     paths_data = {
-        'character': char_ID,
+        'character': character,
         'available_paths': available_paths,
         'aspiration_paths': aspiration_paths
     }
@@ -398,38 +376,119 @@ def evolve(request, char_ID):
 
     return render(request, 'sheet/evolve.html', data)
 
-def upgrade(request):
+def upgrade_attribute(request):
     if request.accepts("application/json") and request.method == 'GET':
         char_ID = int(request.GET.get('char_ID'))
-        upgrade_bought = request.GET.get('upgrade_bought')
+        attribute_type = request.GET.get('attribute_type')
         action_to_take = int(request.GET.get('action_to_take'))
+        is_training = json.loads(request.GET.get('is_training', 'false'))
 
         character = Character.objects.get(pk=char_ID)
         attributes = Attribute.objects.filter(char_ID=character)
-        actions = Action.objects.filter(char_ID=character)
 
-        if upgrade_bought in Attribute.AttrTypes:
-            print(upgrade_bought)
-            attribute = attributes.get(_type=upgrade_bought)
-            attribute.total_value += action_to_take
-            attribute.save()
-            return JsonResponse({'result': attribute.total_value})
-        elif upgrade_bought in Action.ActionTypes:
-            dice = request.GET.get('dice')
-            action = actions.get(_type=upgrade_bought)
-            current = getattr(action, dice)
-            setattr(action, dice, current + action_to_take)
-        elif upgrade_bought == 'movement' or upgrade_bought == 'main':
-            current = getattr(character, f'{upgrade_bought}_actions')
-            setattr(character, f'{upgrade_bought}_actions', current + action_to_take)
+        if attribute_type in Attribute.AttrTypes:
+            attribute = attributes.get(_type=attribute_type)
+
+            if is_training:
+                raw_cost = attribute.training_cost
+
+                if action_to_take >= 0:
+                    cost = action_to_take * raw_cost
+                    attribute.training_cost += 500
+                else:
+                    cost = action_to_take * (raw_cost - 500)
+                    attribute.training_cost -= 500
+                
+                if cost > character.xp_current:
+                    return JsonResponse({'error': 'Not enough XP'}, status=500)
+                
+                attribute.training_level += action_to_take                
+                attribute.save()
+                character.xp_current -= cost
+                character.save()
+                return JsonResponse({'result': attribute.training_level, 'update_xp': character.xp_current})
+            else:
+                cost = action_to_take * attribute.attribute_point_cost
+                if cost > character.xp_current:
+                    return JsonResponse({'error': 'Not enough XP'}, status=500)
+                
+                attribute.total_value += action_to_take
+                attribute.save()
+                character.xp_current -= cost
+                character.save()
+                return JsonResponse({'result': attribute.total_value, 'update_xp': character.xp_current})
         else:
             messages.error(request, 'Error')
             return redirect('evolve', char_ID=character.pk)
-
-        return JsonResponse({'success': 0})
     
     return redirect('home')
 
+def upgrade_action(request):
+    if request.accepts("application/json") and request.method == 'GET':
+        char_ID = int(request.GET.get('char_ID'))
+        action_type = request.GET.get('action_type')
+        action_to_take = int(request.GET.get('action_to_take'))
+        dice = request.GET.get('dice')
+
+        character = Character.objects.get(pk=char_ID)
+        actions = Action.objects.filter(char_ID=character)
+
+        if action_type in Action.ActionTypes:            
+            action = actions.get(_type=action_type)
+            cost = action_to_take * action.dice_cost[dice]
+            if cost > character.xp_current:
+                return JsonResponse({'error': 'Not enough XP'}, status=500)
+            
+            current = getattr(action, dice)
+            setattr(action, dice, current + action_to_take)
+            action.save()
+            character.xp_current -= cost
+            character.save()
+            return JsonResponse({'result': getattr(action, dice), 'update_xp': character.xp_current})
+        else:
+            messages.error(request, 'Error')
+            return redirect('evolve', char_ID=character.pk)
+    else:
+        return redirect('home')
+
+def upgrade_character_battle_actions(request):
+    if request.accepts("application/json") and request.method == 'GET':
+        char_ID = int(request.GET.get('char_ID'))
+        battle_action_type = request.GET.get('battle_action_type')
+        action_to_take = int(request.GET.get('action_to_take'))
+
+        character = Character.objects.get(pk=char_ID)
+
+        if battle_action_type == 'movement' or battle_action_type == 'main':
+            raw_cost = getattr(character, f'{battle_action_type}_action_cost')
+
+            if action_to_take >= 0:
+                cost = action_to_take * raw_cost
+            else:
+                cost = action_to_take * (raw_cost - (2000 if battle_action_type == 'movement' else 3000))
+
+            if cost > character.xp_current:
+                return JsonResponse({'error': 'Not enough XP'}, status=500)
+
+            action_type = f'{battle_action_type}_actions'
+            current = getattr(character, action_type)
+            setattr(character, action_type, current + action_to_take)
+            character.xp_current -= cost
+            setattr(character, f'{battle_action_type}_action_cost', raw_cost + cost)
+            character.save()
+            
+            json_data = {
+                'result': getattr(character, action_type),
+                'update_xp': character.xp_current,
+                'new_cost': getattr(character, f'{battle_action_type}_action_cost')
+            }
+            return JsonResponse(json_data)
+        else:
+            messages.error(request, 'Error')
+            return redirect('evolve', char_ID=character.pk)
+    else:
+        return redirect('home')
+    
 # Views related to manipulating skills
 @login_required
 def skills(request, char_ID):

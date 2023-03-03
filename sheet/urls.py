@@ -17,7 +17,9 @@ urlpatterns = [
     path('update/attributes/<int:char_ID>/', views.update_attributes, name='update_attributes'),
     path('update/text/', views.update_text, name='update_text'),
     path('evolve/<int:char_ID>/', views.evolve, name='evolve'),
-    path('upgrade/', views.upgrade, name='upgrade'),
+    path('upgrade/attribute/', views.upgrade_attribute, name='upgrade_attribute'),
+    path('upgrade/action/', views.upgrade_action, name='upgrade_action'),
+    path('upgrade/character/battle/', views.upgrade_character_battle_actions, name='upgrade_char_battle'),
     path('skills/<int:char_ID>/', views.skills, name='skills'),
     path('skills/equip/', views.equip_skill, name='equip_skill'),
 ]

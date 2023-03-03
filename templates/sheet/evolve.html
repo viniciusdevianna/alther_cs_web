@@ -8,9 +8,10 @@
     <title>Evoluir</title>
 </head>
 <body>
+    {% include 'partials/_alerts.html' %}
     <div class="main-information" data-character="{{ character.pk }}">
         <h1>Evoluindo {{ character.name }}</h1>
-        <h2>XP Disponível: {{ character.xp_current }}</h2>
+        <h2 id="current-xp">XP Disponível: {{ character.xp_current }}</h2>
     </div>
     <div class="attributes-information">
         <div>
@@ -30,17 +31,17 @@
             {% for attribute in attributes %}
             <tr>
                 <td>{{ attribute.type }}</td>
-                <td><button class="button-upgrade-attr" value="{{ attribute.pk }}" id="decrement-{{ attribute.type }}">-</button></td>
-                <td>{{ attribute.total_value }}</td>
-                <td><button class="button-upgrade-attr" value="{{ attribute.pk }}" id="increment-{{ attribute.type }}">+</button></td>
-                <td><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="untrain-{{ attribute.type }}">-</button></td>
-                <td>{{ attribute.training_level }}</td>
-                <td><button class="button-upgrade-attr" value="{{ attribute.pk }}" id="train-{{ attribute.type }}">+</button></td>
+                <td><button class="button-upgrade-attr" value="{{ attribute.type }}" id="decrement-{{ attribute.type }}">-</button></td>
+                <td id="{{ attribute.type }}-total-value">{{ attribute.total_value }}</td>
+                <td><button class="button-upgrade-attr" value="{{ attribute.type }}" id="increment-{{ attribute.type }}">+</button></td>
+                <td><button class="button-train-attr" value="{{ attribute.type }}" id="decrement-train-{{ attribute.type }}">-</button></td>
+                <td id="{{ attribute.type }}-training-level">{{ attribute.training_level }}</td>
+                <td><button class="button-train-attr" value="{{ attribute.type }}" id="increment-train-{{ attribute.type }}">+</button></td>
             </tr>
             {% endfor %}
         </table>
     </div>
-    <div>
+    <div class="actions-information">
         <div>
             <h2>Ações</h2>
             <h3>1d4: 200 XP 1d6: 300 XP 1d8: 400 XP 1d10: 500 XP 1d12: 600 XP 1d20: 800 XP</h3>
@@ -71,53 +72,53 @@
                 {% for action in actions %}
                 <tr>
                     <td>{{ action.type }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d4">-</button></td>
-                    <td>{{ action.nd4 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d4">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d6">-</button></td>
-                    <td>{{ action.nd6 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d6">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d8">-</button></td>
-                    <td>{{ action.nd8 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d8">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d10">-</button></td>
-                    <td>{{ action.nd10 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d10">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d12">-</button></td>
-                    <td>{{ action.nd12 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d12">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-sub-d20">-</button></td>
-                    <td>{{ action.nd20 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.pk }}" id="{{ action.type }}-add-d20">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd4">-</button></td>
+                    <td id="{{ action.type }}-nd4">{{ action.nd4 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd4">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd6">-</button></td>
+                    <td id="{{ action.type }}-nd6">{{ action.nd6 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd6">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd8">-</button></td>
+                    <td id="{{ action.type }}-nd8">{{ action.nd8 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd8">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd10">-</button></td>
+                    <td id="{{ action.type }}-nd10">{{ action.nd10 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd10">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd12">-</button></td>
+                    <td id="{{ action.type }}-nd12">{{ action.nd12 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd12">+</button></td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd20">-</button></td>
+                    <td id="{{ action.type }}-nd20">{{ action.nd20 }}</td>
+                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd20">+</button></td>
                 </tr>
                 {% endfor %}         
             </table>
         </div>
-        <div>
-            <table>
-                <tr>
-                    <th>Ações de Movimento</th>
-                    <td>{{ character.movement_actions }}</td>
-                    <td>
-                        <button value="{{ character.pk }}" name="movement-increase">2000 XP</button>
-                    </td>
-                    <td>
-                        <button value="{{ character.pk }}" name="movement-decrease">Desfazer</button>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Ações Padrão</th>
-                    <td>{{ character.main_actions }}</td>
-                    <td>
-                        <button value="{{ character.pk }}" name="main-increase">3000 XP</button>
-                    </td>
-                    <td>
-                        <button value="{{ character.pk }}" name="main-decrease">Desfazer</button>
-                    </td>
-                </tr>
-            </table>
-        </div>
     </div>
+    <div class="battle-information">
+        <table>
+            <tr>
+                <th>Ações de Movimento</th>
+                <td id="character-movement-actions">{{ character.movement_actions }}</td>
+                <td>
+                    <button value="movement" id="increase-movement-button">{{ character.movement_action_cost }} XP</button>
+                </td>
+                <td>
+                    <button value="movement" id="decrease-movement-button">Desfazer</button>
+                </td>
+            </tr>
+            <tr>
+                <th>Ações Padrão</th>
+                <td id="character-main-actions">{{ character.main_actions }}</td>
+                <td>
+                    <button value="main" id="increase-main-button">{{ character.main_action_cost }} XP</button>
+                </td>
+                <td>
+                    <button value="main" id="decrease-main-button">Desfazer</button>
+                </td>
+            </tr>
+        </table>
+    </div>    
     <div>
         <form action="{% url 'main' character.pk %}">
             <input type="submit" value="Finalizar">
