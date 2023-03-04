@@ -1,14 +1,5 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static '/styles/style.css' %}">
-    <link rel="icon" href="{% static '/assets/favicon.png' %}">
-    <title>Alther Character Sheet</title>
-</head>
+{% include 'partials/_head.html' with page_title='Ficha de Personagem' %}
 <body>
     {% include 'partials/_alerts.html' %}
     <h1>Ficha de Personagem</h1>
