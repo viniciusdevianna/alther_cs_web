@@ -1,17 +1,64 @@
+/* Fonts */
+@font-face {
+    font-family: 'okamiregular';
+    src: url("{% static '/assets/fonts/okami-webfont.woff2' %}") format('woff2'),
+         url("{% static '/assets/fonts/okami-webfont.woff' %}") format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 /* Header */
 .header-general {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    position: fixed;
+    align-items: flex-end;
+    position: sticky;
+    align-self: flex-start;
+    width: 95%;
     top: 0;
+    margin: 10px;
 }
 
 .logo-img {
-    max-width: 50%;
-    max-height: 50%;
+    width: 40%;
+    height: 40%;
+    min-width: 122px;
+    min-height: 4px;
+}
+
+.nav-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 10px;
+    width: 50%;
+}
+
+/* Body */
+body {
+    margin: 15px 15px 15px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.char-name-container {
+    margin-top: 20px;
+    border-bottom: 1px solid #ba1019;
 }
 
 .char-name {
-    border-bottom: 1px solid #ba1019;
+    font-size: xx-large;
+    font-family: 'okamiregular';
 }
+
+.main-information {
+    margin: 10px 10px 10px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+

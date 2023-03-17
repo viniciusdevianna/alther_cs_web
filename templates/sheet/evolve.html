@@ -1,6 +1,7 @@
 {% load static %}
 {% include 'partials/_head.html' with page_title='Evoluir' %}
 <body>
+    {% include 'partials/_header.html' %}
     {% include 'partials/_alerts.html' %}
     <div class="main-information" data-character="{{ character.pk }}">
         <h1>Evoluindo {{ character.name }}</h1>

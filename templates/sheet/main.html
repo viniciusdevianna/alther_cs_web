@@ -2,23 +2,24 @@
 {% include 'partials/_head.html' with page_title='Ficha de Personagem' %}
 <body>
     {% include 'partials/_alerts.html' %}
-    <h1>Ficha de Personagem</h1>
-    <a href="{% url 'logout' %}">Logout</a>
-    <div class="main-information" data-character="{{ character.pk }}">
+    {% include 'partials/_header.html' %}
+    <div class="char-name-container">
         <h2 class="char-name">{{ character.name }}</h2>
+    </div>
+    <div class="main-information" data-character="{{ character.pk }}">        
         <p class="char-race">{{ character.race }}</p>
         <p class="char-physical-information">{{ character.age }} ciclos</p>
         <p class="char-physical-information">{{ character.weight }} kg</p>
         <p class="char-physical-information">{{ character.height }} m</p>
         <p class="char-aspiration">{{ character.aspiration }}</p>
+        <div>
+            <form action="{% url 'update_bg' character.pk %}" method="GET">
+                <input type="submit" value="Editar">
+            </form>
+        </div>
     </div>
     <div class="school-information">
         <h3>{{ character.school }}</h3>
-    </div>
-    <div>
-        <form action="{% url 'update_bg' character.pk %}" method="GET">
-            <input type="submit" value="Editar">
-        </form>
     </div>
     <div class="level-information">
         <p class="char-level">Nível {{ character.level }}</p>

@@ -61,7 +61,7 @@ def signup(request):
 def logout(request):
     auth.logout(request)
     messages.success(request, f"Logout realizado com sucesso")
-    return redirect('index')
+    return redirect('home')
 
 @login_required
 def pick_character(request):        

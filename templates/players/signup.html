@@ -1,5 +1,6 @@
 {% include 'partials/_head.html' with page_title='Registro de Jogador' %}
 <body>
+    {% include 'partials/_header.html' %}
     {% include 'partials/_alerts.html' %}
     <form action="{% url 'signup' %}" method="POST">
         {% csrf_token %}

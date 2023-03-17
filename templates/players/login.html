@@ -1,5 +1,6 @@
 {% include 'partials/_head.html' with page_title='Login Jogador' %}
 <body>
+    {% include 'partials/_header.html' %}
     {% include 'partials/_alerts.html' %}
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}

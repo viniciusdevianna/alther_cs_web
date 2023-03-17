@@ -1,5 +1,6 @@
 {% include 'partials/_head.html' with page_title='Criar Personagem' %}
 <body>
+    {% include 'partials/_header.html' %}
     <h1>Crie seu personagem!</h1>
     <div>
         <form action="{% url 'create' %}" method="POST">
