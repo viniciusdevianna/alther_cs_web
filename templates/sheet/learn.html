@@ -28,6 +28,7 @@
             {% csrf_token %}
             <button type="submit" value="{{ character.pk }}" name="character">Finalizar</button>
         </form>
-    </div>    
+    </div>
+    {% include 'partials/_script.html' %}   
 </body>
 </html>

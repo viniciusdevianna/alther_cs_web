@@ -59,7 +59,7 @@ function updatePathInfo(event) {
 
 function updateInventoryAndAnnotations(event) {
     const newText = $(event.target).val();
-    const infoToUpdate = $(event.target).attr('class');
+    const infoToUpdate = $(event.target).data('field');
     $.ajax({
         type: 'GET',
         url: '/sheet/update/text/',
@@ -117,7 +117,7 @@ $('.roll-button').on('click', (event) => {
     }
 );
 
-$('#input-char-xp').on('keydown', (event) => {
+$('#inputCharXP').on('keydown', (event) => {
     if (event.which == 13) {
         const totalXP = $(event.target).val();        
         $.ajax({
@@ -128,10 +128,10 @@ $('#input-char-xp').on('keydown', (event) => {
                 'total_XP': totalXP
             },
             success: (response) => {
-                $('#input-char-xp').val(response['xp_total']);
-                $('#char-xp-current').text(`${response['xp_current']} / `);
-                $('.char-level').text(`Nível ${response['level']}`);
-                $('#input-char-xp').blur();
+                $('#inputCharXP').val(response['xp_total']);
+                $('#charXPCurrent').html(`XP ${response['xp_current']} / `);
+                $('#charLevel').text(`Nível ${response['level']}`);
+                $('#inputCharXP').blur();
             },
             error: () => {
                 console.log('Error')

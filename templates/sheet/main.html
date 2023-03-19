@@ -3,216 +3,262 @@
 <body>
     {% include 'partials/_alerts.html' %}
     {% include 'partials/_header.html' %}
-    <div class="char-name-container">
-        <h2 class="char-name">{{ character.name }}</h2>
-    </div>
-    <div class="main-information" data-character="{{ character.pk }}">        
-        <p class="char-race">{{ character.race }}</p>
-        <p class="char-physical-information">{{ character.age }} ciclos</p>
-        <p class="char-physical-information">{{ character.weight }} kg</p>
-        <p class="char-physical-information">{{ character.height }} m</p>
-        <p class="char-aspiration">{{ character.aspiration }}</p>
-        <div>
-            <form action="{% url 'update_bg' character.pk %}" method="GET">
-                <input type="submit" value="Editar">
-            </form>
+    <main class="d-flex flex-column">
+        <section class="main-information m-2 d-flex flex-column" data-character="{{ character.pk }}">
+            <div class="section-title d-flex justify-content-between">
+                <h2 class="char-name main-text">{{ character.name }}</h2>
+                <form action="{% url 'update_bg' character.pk %}" method="GET">
+                    <input type="submit" value="Editar" class="btn btn-primary">
+                </form>
+            </div>
+            <div class="data-list mb-2">
+                <ul class="list-group list-group-horizontal justify-content-between align-items-center overflow-auto">
+                    <li class="list-group-item border-0 flex-row align-items-center">
+                        <span class="d-none d-xl-inline-block me-1 fw-bolder">Raça</span>
+                        <span class="char-race border border-dark border-1 rounded px-4 py-1 text-nowrap" id="race">{{ character.race }}</span>
+                    </li>
+                    <li class="list-group-item border-0 flex-row align-items-center">
+                        <span class="d-none d-xl-inline-block me-1 fw-bolder">Idade</span>
+                        <span class="char-physical-information border border-dark border-1 rounded px-4 py-1 text-nowrap" id="age">{{ character.age }} ciclos</span>
+                    </li>
+                    <li class="list-group-item border-0 flex-row align-items-center">
+                        <span class="d-none d-xl-inline-block me-1 fw-bolder">Peso</span>
+                        <span class="char-physical-information border border-dark border-1 rounded px-4 py-1 text-nowrap" id="weight">{{ character.weight }} kg</span>
+                    </li>
+                    <li class="list-group-item border-0 flex-row align-items-center">
+                        <span class="d-none d-xl-inline-block me-1 fw-bolder">Altura</span>
+                        <span class="char-physical-information border border-dark border-1 rounded px-4 py-1 text-nowrap" id="height">{{ character.height }} m</span>
+                    </li>
+                    <li class="list-group-item border-0 flex-row align-items-center">
+                        <span class="d-none d-xl-inline-block me-1 fw-bolder">Aspiração</span>
+                        <span class="char-aspiration border border-dark border-1 rounded px-4 py-1 text-nowrap" id="aspiration">{{ character.aspiration }}</span>
+                    </li>
+                    <li class="school-data list-group-item border-0 d-flex flex-row align-items-center">
+                        <img src="{% static 'assets/img/schools/' %}{{ character.school.pk }}_ico.png" alt="símbolo da escola" class="school-logo-img me-1">
+                        <span class="d-none d-xl-inline-block main-text">{{ character.school }}</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <div class="cards container-fluid">
+            <section class="level-health-misc row g-2">
+                <section class="level-information col-md-4 col-sm-12">
+                    <article class="card custom-card shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="main-text" id="charLevel">Nível {{ character.level }}</h2>
+                            <form action="{% url 'evolve' character.pk %}">
+                                <input type="submit" value="Evoluir" class="btn btn-primary">
+                            </form>
+                        </div>
+                        <div class="card-body">                            
+                            <div class="experience-points mt-2 mb-2 container-fluid">
+                                <div class="row">
+                                    <span class="char-xp w-25 col text-end align-self-center" id="charXPCurrent">XP {{ character.xp_current }} / </span>
+                                    <input type="number" value="{{ character.xp_total }}" id="inputCharXP"
+                                        class="border-0 fs-3 col">
+                                </div>                        
+                            </div>
+                        </div>                        
+                    </article>                    
+                </section>
+                <section class="health-information col-md-4 col-sm-12">
+                    <article class="card custom-card shadow-sm">
+                        <div class=" card-header d-flex justify-content-start">
+                            <h2 class="main-text">Saúde</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="container-fluid mb-1">
+                                <div class="row">
+                                    <div class="health-points col-8">
+                                        <h3 class="health-points text-center">PV</h3>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <label for="input-health-points-current" class="fw-bolder">Atual</label>
+                                                <input type="text" class="hp-value form-control rounded-pill border border-3 border-dark px-2 text-end text-nowrap" value="{{ character.hp_current }}" id="input-health-points-current">
+                                            </div>
+                                            <div class="col-4">
+                                                <label for="input-health-points-total" class="fw-bolder">Total</label>
+                                                <input type="text" class="hp-value form-control rounded-pill border border-3 border-dark px-2 text-end" value="{{ character.hp_total }}" id="input-health-points-total">
+                                            </div>
+                                            <div class="col-4">
+                                                <label for="input-health-points-total" class="fw-bolder">Temp</label>
+                                                <input type="text" class="hp-value form-control rounded-pill border border-3 px-2 text-end" value="{{ character.hp_temp }}" id="input-health-points-temp">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="unbalance-points col-4 text-center">
+                                        <h3>PD</h3>
+                                        <input type="number" value="{{ character.unbalance }}" 
+                                            class="circle-input rounded-circle text-center" id="input-unbalance-points">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </article>
+                </section>
+                <section class="misc-information d-flex flex-column col-md-4 col-sm-12">
+                    <div class="inventory d-flex flex-column justify-content-center align-items-start">
+                        <label for="input-coin" class="fw-bolder">Moeda</label>
+                        <input type="text" id="input-coin" class="form-control" value="{{ character.coin }}">
+                        <label for="input-inventory" class="fw-bolder">Inventário</label>
+                        <textarea class="annotation-area form-control" id="input-inventory" data-field="inventory">{{ character.inventory }}</textarea>
+                    </div>
+                    
+                </section>
+            </section>
         </div>
-    </div>
-    <div class="school-information">
-        <h3>{{ character.school }}</h3>
-    </div>
-    <div class="level-information">
-        <p class="char-level">Nível {{ character.level }}</p>
-        <span>XP</span>   
-        <p class="char-xp" id="char-xp-current">{{ character.xp_current }} / </p>
-        <input type="number" value="{{ character.xp_total }}" class="char-xp" id="input-char-xp">
-        <div>
-            <form action="{% url 'evolve' character.pk %}">
-                <input type="submit" value="Evoluir">
-            </form>
-        </div>
-    </div>
-    <div class="health-information">
-        <div class="unbalance-points">
-            <label class="unbalance-points" for="input-unbalance-points">PD</label>
-            <input type="number" value="{{ character.unbalance }}" class="unbalance-points" id="input-unbalance-points">
-        </div>
-        <div class="health-points">
-            <h2 class="health-points">Pontos de Vida</h2>
-            <table class="health-points-table">
+        
+        <div class="attributes-information">
+            <div class="attributes-information" id="attributes-info-header">
+                <form action="{% url 'update_attributes' character.pk %}" id="attributes-info-form">
+                    <h2 class="attributes-header">Atributos</h2>
+                    <input type="submit" value="Editar">
+                </form>            
+            </div>
+            <table>
                 <tr>
+                    <th>Atributo</th>
+                    <th></th>
                     <th>Atual</th>
+                    <th></th>
                     <th>Total</th>
                     <th>Temp</th>
+                    <th>Treino</th>
                 </tr>
+                {% for attribute in attributes %}
                 <tr>
-                    <td><input type="text" class="health-points" value="{{ character.hp_current }}" id="input-health-points-current"></td>
-                    <td><input type="text" class="health-points" value="{{ character.hp_total }}" id="input-health-points-total"></td>
-                    <td><input type="text" class="health-points" value="{{ character.hp_temp }}" id="input-health-points-temp"></td>
+                    <td>{{ attribute.type }}</td>                
+                    <td><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="decrement-{{ attribute.type }}">-</button></td>
+                    <td id="current-{{ attribute.pk }}">{{ attribute.current_value }}</td>
+                    <td><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="increment-{{ attribute.type }}">+</button></td>
+                    <td id="total-{{ attribute.pk }}">{{ attribute.total_value }}</td>
+                    <td>{{ attribute.temp_value }}</td>
+                    <td>{{ attribute.training_level }}</td>
                 </tr>
+                {% endfor %}            
             </table>
         </div>
-    </div>    
-    <div class="attributes-information">
-        <div class="attributes-information" id="attributes-info-header">
-            <form action="{% url 'update_attributes' character.pk %}" id="attributes-info-form">
-                <h2 class="attributes-header">Atributos</h2>
-                <input type="submit" value="Editar">
-            </form>            
-        </div>
-        <table>
-            <tr>
-                <th>Atributo</th>
-                <th></th>
-                <th>Atual</th>
-                <th></th>
-                <th>Total</th>
-                <th>Temp</th>
-                <th>Treino</th>
-            </tr>
-            {% for attribute in attributes %}
-            <tr>
-                <td>{{ attribute.type }}</td>                
-                <td><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="decrement-{{ attribute.type }}">-</button></td>
-                <td id="current-{{ attribute.pk }}">{{ attribute.current_value }}</td>
-                <td><button class="button-manipulate-attr" value="{{ attribute.pk }}" id="increment-{{ attribute.type }}">+</button></td>
-                <td id="total-{{ attribute.pk }}">{{ attribute.total_value }}</td>
-                <td>{{ attribute.temp_value }}</td>
-                <td>{{ attribute.training_level }}</td>
-            </tr>
-            {% endfor %}            
-        </table>
-    </div>
-    <div class="actions-information">
-        <div class="actions-information" id="actions-info-header">
-            <form action="{% url 'update_actions' character.pk %}" id="actions-info-form">
-                <h2 class="actions-header">Ações</h2>
-                <input type="submit" value="Editar">
-            </form>            
-        </div>
-        <table>
-            <tr>
-                <th>Ação</th>
-                <th>d4</th>
-                <th>d6</th>
-                <th>d8</th>
-                <th>d10</th>
-                <th>d12</th>
-                <th>d20</th>
-                <th>Bônus</th>
-                <th>Penalidade</th>
-                <th></th>
-            </tr>
-            {% for action in actions %}
-            <tr>
-                <td>{{ action.type }}</td>
-                <td>{{ action.nd4 }}</td>
-                <td>{{ action.nd6 }}</td>
-                <td>{{ action.nd8 }}</td>
-                <td>{{ action.nd10 }}</td>
-                <td>{{ action.nd12 }}</td>
-                <td>{{ action.nd20 }}</td>
-                <td>{{ action.flat_bonus }}</td>
-                <td>{{ action.flat_penalty }}</td>        
-                <td>
-                    <button type="button" class="roll-button action" value="{{ action.pk }}">Rolar</button>
-                </td>
-                <td class="roll-result action" id="action-{{ action.pk }}"></td>
-            </tr>
-            {% endfor %}            
-        </table>
-    </div>
-    <div class="path-information" id="path-selection">
-        <h2>Caminhos</h2>
-        <h3>Ativo:</h3>
-        <select class="path-information" name="path-select" id="active-path-select">
-            {% for path in available_paths %}
-                {% if path.pk == active_path.pk %}
-                    <option value="{{ path.pk }}" selected>{{ path.path_ID }}</option>
-                {% else %}
-                    <option value="{{ path.pk }}">{{ path.path_ID }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
-        <table>
-            <tr>
-                <th>PC Atual</th>
-                <th>PC Total</th>
-                <th>Nível</th>
-                <th>Mestre</th>
-            </tr>
-            <tr>
-                <td id="active-current-pp">{{ active_path.current_pp }}</td>
-                <td id="active-total-pp">
-                    <input type="number" value="{{ active_path.total_pp }}">
-                </td>
-                <td id="active-level">{{ active_path.level }}</td>
-                <td id="active-is-master">
-                    {% if active_path.is_master %}
-                        &#x2713;
-                    {% endif %}
-                </td>
-            </tr>
-        </table>
-        <form action="{% url 'skills' character.pk %}">
-            <input type="submit" value="Aprender Habilidades">
-        </form>
-    </div>
-    <div class="skills-information">
-        <h2>Habilidades</h2>
-        <table id="equip-skills-table">
-            <tr>
-                <th>Slot</th>
-                <th>Habilidade</th>
-                <th>Descrição</th>
-            </tr>            
-            <tr>
-                <td>Intrínseca</td>
-                <td id="intrinsic-skill-name">{{ equipped_skills.intrinsic.name }}</td>
-                <td id="intrinsic-skill-description">{{ equipped_skills.intrinsic.description }}</td>
-            </tr>
-            {% for slot, equipped_skill in equipped_skills_dict.items %}
+        <div class="actions-information">
+            <div class="actions-information" id="actions-info-header">
+                <form action="{% url 'update_actions' character.pk %}" id="actions-info-form">
+                    <h2 class="actions-header">Ações</h2>
+                    <input type="submit" value="Editar">
+                </form>            
+            </div>
+            <table>
                 <tr>
-                    <td>{{ slot }}</td>
-                    <td id="{{ slot }}-skill">
-                        <select name="{{ slot }}-skill-select" class="skill-information" data-slot="{{ slot }}">
-                            {% if equipped_skill is None %}
-                                <option value="0" selected>-------------</option>
-                            {% else %}
-                                <option value="0">-------------</option>
-                            {% endif %}
-                            {% for skill in available_skills %}
-                                {% if skill.skill_ID.category.lower in slot %}
-                                    {% if equipped_skill.pk == skill.skill_ID.pk %}
-                                        <option value="{{ skill.skill_ID.pk }}" selected>{{ skill.skill_ID.name }}</option>
-                                    {% else %}
-                                        <option value="{{ skill.skill_ID.pk }}">{{ skill.skill_ID.name }}</option>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                        </td>
-                        <td id="{{ slot }}-skill-description">{{ equipped_skill.description }}</td>
+                    <th>Ação</th>
+                    <th>d4</th>
+                    <th>d6</th>
+                    <th>d8</th>
+                    <th>d10</th>
+                    <th>d12</th>
+                    <th>d20</th>
+                    <th>Bônus</th>
+                    <th>Penalidade</th>
+                    <th></th>
                 </tr>
-            {% endfor %}           
-        </table>
-    </div>
-
-    <div class="miscelanous-information">
-        <div class="inventory">
-            <label for="input-coin" class="inventory">Moeda: </label>
-            <input type="text" id="input-coin" class="inventory" value="{{ character.coin }}">
-            <label for="input-inventory" class="inventory">Inventário</label>
-            <textarea class="inventory" id="input-inventory" rows="10" cols="50">{{ character.inventory }}</textarea>
+                {% for action in actions %}
+                <tr>
+                    <td>{{ action.type }}</td>
+                    <td>{{ action.nd4 }}</td>
+                    <td>{{ action.nd6 }}</td>
+                    <td>{{ action.nd8 }}</td>
+                    <td>{{ action.nd10 }}</td>
+                    <td>{{ action.nd12 }}</td>
+                    <td>{{ action.nd20 }}</td>
+                    <td>{{ action.flat_bonus }}</td>
+                    <td>{{ action.flat_penalty }}</td>        
+                    <td>
+                        <button type="button" class="roll-button action" value="{{ action.pk }}">Rolar</button>
+                    </td>
+                    <td class="roll-result action" id="action-{{ action.pk }}"></td>
+                </tr>
+                {% endfor %}            
+            </table>
+        </div>
+        <div class="path-information" id="path-selection">
+            <h2>Caminhos</h2>
+            <h3>Ativo:</h3>
+            <select class="path-information" name="path-select" id="active-path-select">
+                {% for path in available_paths %}
+                    {% if path.pk == active_path.pk %}
+                        <option value="{{ path.pk }}" selected>{{ path.path_ID }}</option>
+                    {% else %}
+                        <option value="{{ path.pk }}">{{ path.path_ID }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <table>
+                <tr>
+                    <th>PC Atual</th>
+                    <th>PC Total</th>
+                    <th>Nível</th>
+                    <th>Mestre</th>
+                </tr>
+                <tr>
+                    <td id="active-current-pp">{{ active_path.current_pp }}</td>
+                    <td id="active-total-pp">
+                        <input type="number" value="{{ active_path.total_pp }}">
+                    </td>
+                    <td id="active-level">{{ active_path.level }}</td>
+                    <td id="active-is-master">
+                        {% if active_path.is_master %}
+                            &#x2713;
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            <form action="{% url 'skills' character.pk %}">
+                <input type="submit" value="Aprender Habilidades">
+            </form>
+        </div>
+        <div class="skills-information">
+            <h2>Habilidades</h2>
+            <table id="equip-skills-table">
+                <tr>
+                    <th>Slot</th>
+                    <th>Habilidade</th>
+                    <th>Descrição</th>
+                </tr>            
+                <tr>
+                    <td>Intrínseca</td>
+                    <td id="intrinsic-skill-name">{{ equipped_skills.intrinsic.name }}</td>
+                    <td id="intrinsic-skill-description">{{ equipped_skills.intrinsic.description }}</td>
+                </tr>
+                {% for slot, equipped_skill in equipped_skills_dict.items %}
+                    <tr>
+                        <td>{{ slot }}</td>
+                        <td id="{{ slot }}-skill">
+                            <select name="{{ slot }}-skill-select" class="skill-information" data-slot="{{ slot }}">
+                                {% if equipped_skill is None %}
+                                    <option value="0" selected>-------------</option>
+                                {% else %}
+                                    <option value="0">-------------</option>
+                                {% endif %}
+                                {% for skill in available_skills %}
+                                    {% if skill.skill_ID.category.lower in slot %}
+                                        {% if equipped_skill.pk == skill.skill_ID.pk %}
+                                            <option value="{{ skill.skill_ID.pk }}" selected>{{ skill.skill_ID.name }}</option>
+                                        {% else %}
+                                            <option value="{{ skill.skill_ID.pk }}">{{ skill.skill_ID.name }}</option>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            </td>
+                            <td id="{{ slot }}-skill-description">{{ equipped_skill.description }}</td>
+                    </tr>
+                {% endfor %}           
+            </table>
         </div>
         <div class="annotations">
             <label for="input-annotations" class="annotations">Anotações: </label>
             <textarea id="input-annotations" cols="50" rows="10" class="annotations">{{ character.annotations }}</textarea>
         </div>
-    </div>
-
+    </main>
     {% block javascript %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    {% include 'partials/_script.html' %}
     <script src="{% static '/js/main.js' %}"></script>
     {% endblock javascript %}
 </body>

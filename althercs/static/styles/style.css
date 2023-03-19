@@ -8,62 +8,56 @@
 
 }
 
+/* Hide input arrows */
+/* Chrome and Safari */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+  }
+
 /* Header */
-.header-general {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    position: sticky;
-    align-self: flex-start;
-    width: 95%;
-    top: 0;
-    margin: 10px;
-}
-
 .logo-img {
-    width: 40%;
-    height: 40%;
-    min-width: 122px;
-    min-height: 4px;
+    width: 306px;
+    height: 98px;
 }
 
-.nav-menu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: flex-end;
-    gap: 10px;
-    width: 50%;
-}
-
-/* Body */
-body {
-    margin: 15px 15px 15px 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.char-name-container {
-    margin-top: 20px;
-    border-bottom: 1px solid #ba1019;
-}
-
-.char-name {
+.main-text {
     font-size: xx-large;
     font-family: 'okamiregular';
 }
 
-.main-information {
-    margin: 10px 10px 10px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
+/* Body */
+.section-title {
+    border-bottom: 1px solid #ba1019;
 }
 
-.level-information {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+.school-logo-img {
+    width: 60px;
+    height: 100px;
+    object-fit: scale-down;
+    flex-shrink: 1;
 }
 
+.custom-card {
+    border-color: #ba1019!important;
+}
+
+.circle-input {
+    width: 75px;
+    height: 75px;
+}
+
+.annotation-area {
+    height: 133px;
+    min-width: 250px;
+}
+
+.hp-value {
+    min-width: 50px;
+}
