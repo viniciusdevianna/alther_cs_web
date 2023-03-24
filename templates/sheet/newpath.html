@@ -1,25 +1,40 @@
 {% include 'partials/_head.html' with page_title='Caminhos' %}
+{% load static %}
 <body>
     {% include 'partials/_header.html' %}
-    <div>
-        <h1>Caminhos para {{ character.name }}</h1>
-    </div>    
-    <div>
-        <form action="" method="POST">
-            {% csrf_token %}
-            {% for path in aspiration_paths %}
-                {% if path in available_paths %}
-                    <h2>{{ path.name }}</h2>
-                    <p>{{ path.tier }}</p>
-                    <p>Maestria: {{ path.master_bonus }}</p>
-                    <button type="submit" name="path_chosen" value="{{ path.pk }}">Escolher</button>
-                {% else %}
-                    <h2>{{ path.name }}</h2>
-                    <h3>{{ path.requirements }}</h3>
-                {% endif %}
-            {% endfor %}
-        </form>               
-    </div>
+    <main>
+        <section class="main-information m-2 d-flex flex-column">
+            <div class="section-title mb-2 d-flex justify-content-between">
+                <h2 class="main-text">Caminhos</h2>
+            </div>
+        </section>
+        <section class="path-list m-2">
+            <div class="paths-form">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="path-cards">
+                        {% for path in aspiration_paths %}
+                        <div class="path-card shadow-lg border border-1 rounded d-flex flex-row justify-content-between align-items-center bg-dark mb-2">
+                            <div class="path-name w-50 d-flex flex-column">
+                                <div class="d-flex flex-row justify-content-around align-items-center">
+                                    <h2 class="main-text ms-3 text-light text-center">{{ path.name }}</h2>
+                                    <span class="text-light fw-bold">Tier {{ path.tier }}</span>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    {% if path in available_paths %}
+                                    <button type="submit" name="path_chosen" value="{{ path.pk }}" class="btn btn-outline-primary">Escolher</button>
+                                    {% else %}
+                                    <span class="text-light fw-bold p-2">{{ path.requirements }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <img src="{% static 'assets/img/paths/' %}{{ path.pk|lower }}.png " alt="imagem do caminho ativo" class="path-img">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </form>
+        </section>
+    </main> 
     {% include 'partials/_script.html' %}
 </body>
 </html>

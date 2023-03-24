@@ -3,121 +3,226 @@
 <body>
     {% include 'partials/_header.html' %}
     {% include 'partials/_alerts.html' %}
-    <div class="main-information" data-character="{{ character.pk }}">
-        <h1>Evoluindo {{ character.name }}</h1>
-        <h2 id="current-xp">XP Disponível: {{ character.xp_current }}</h2>
-    </div>
-    <div class="attributes-information">
-        <div>
-            <h2>Atributos</h2>
-            <h3>1 ponto: 400 XP Treinamento em Perícia: 500 XP</h3>
+    <main>
+        <section class="main-information m-2" data-character="{{ character.pk }}">
+            <div class="section-title d-flex flex-row justify-content-between align-items-center">
+                <h1 class="main-text">Evoluindo {{ character.name }}</h1>
+                <div class="xp-information d-flex flex-row align-items-center">
+                    <h4 class="me-3">XP Disponível</h4>
+                    <h4 class="border border-2 rounded-pill py-2 px-3" id="current-xp">{{ character.xp_current }}</h4>
+                </div>                
+            </div>
+        </section>
+    </main>
+    <section class="attr-action-cards container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
+                <article class="card custom-card mb-1">
+                    <div class="card-header">
+                        <h2 class="main-text">Atributos</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="container-fluid mb-1">
+                            <div class="row justify-content-center text-center text-nowrap mb-1">
+                                <div class="table-header col-4">
+                                    <span class="fw-bolder">Atributo</span>
+                                </div>
+                                <div class="table-header col-4">
+                                    <span class="fw-bolder">Total</span>
+                                </div>
+                                <div class="table-header col-4">
+                                    <span class="fw-bolder">Treino</span>
+                                </div>
+                            </div>
+                            {% for attribute in attributes %}
+                            <div class="row justify-content-center text-center text-nowrap mb-1">
+                                <div class="col-4">
+                                    <span class="fw-bold">{{ attribute.type }}</span>
+                                </div>
+                                <div class="col-4">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="attr-btn button-upgrade-attr btn btn-dark btn-sm" value="{{ attribute.type }}" id="decrement-{{ attribute.type }}">-</button>
+                                        </div>                                        
+                                        <div class="col-4" id="current-{{ attribute.pk }}">
+                                            <span id="{{ attribute.type }}-total-value">{{ attribute.total_value }}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="attr-btn button-upgrade-attr btn btn-dark btn-sm" value="{{ attribute.type }}" id="increment-{{ attribute.type }}">+</button>                                        
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="attr-btn button-train-attr btn btn-dark btn-sm" value="{{ attribute.type }}" id="decrement-train-{{ attribute.type }}">-</button>
+                                        </div>
+                                        <div class="col-4" id="current-{{ attribute.pk }}">
+                                            <span id="{{ attribute.type }}-training-level">{{ attribute.training_level }}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="attr-btn button-train-attr btn btn-dark btn-sm" value="{{ attribute.type }}" id="increment-train-{{ attribute.type }}">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <div class="col-xs-12 col-md-7">
+                <article class="card custom-card mb-1">
+                    <div class="card-header">
+                        <h2 class="main-text">Ações</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="container-fluid mb-1">
+                            <div class="row text-center text-nowrap mb-1">
+                                <div class="table-header col-3">
+                                    <span class="fw-bolder">Ação</span>
+                                </div>
+                                <div class="table-header col-1">
+                                    <span class="fw-bolder">d4</span>
+                                </div>
+                                <div class="table-header col-1">
+                                    <span class="fw-bolder">d6</span>
+                                </div>
+                                <div class="table-header col-1">
+                                    <span class="fw-bolder">d8</span>
+                                </div>
+                                <div class="table-header col-1">
+                                    <span class="fw-bolder">d10</span>
+                                </div>
+                                <div class="table-header col-1">
+                                    <span class="fw-bolder">d12</span>
+                                </div>
+                                <div class="table-header col-1">
+                                    <span class="fw-bolder">d20</span>
+                                </div>
+                            </div>
+                            {% for action in actions %}
+                            <div class="row text-center text-nowrap mb-1">
+                                <div class="col-3">
+                                    <span class="fw-bold">{{ action.type }}</span>
+                                </div>
+                                <div class="col-1">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd4">-</button>
+                                        </div>                                        
+                                        <div class="col-4" id="current-{{ attribute.pk }}">
+                                            <span id="{{ action.type }}-nd4">{{ action.nd4 }}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd4">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-1">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd6">-</button>
+                                        </div>                                        
+                                        <div class="col-4" id="current-{{ attribute.pk }}">
+                                            <span id="{{ action.type }}-nd6">{{ action.nd6 }}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd6">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-1">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd8">-</button>
+                                        </div>                                        
+                                        <div class="col-4" id="current-{{ attribute.pk }}">
+                                            <span id="{{ action.type }}-nd8">{{ action.nd8 }}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd8">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-1">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd10">-</button>
+                                        </div>                                        
+                                        <div class="col-4" id="current-{{ attribute.pk }}">
+                                            <span id="{{ action.type }}-nd10">{{ action.nd10 }}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd10">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-1">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd12">-</button>
+                                        </div>                                        
+                                        <div class="col-4" id="current-{{ attribute.pk }}">
+                                            <span id="{{ action.type }}-nd12">{{ action.nd12 }}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd12">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-1">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd20">-</button>
+                                        </div>                                        
+                                        <div class="col-4" id="current-{{ attribute.pk }}">
+                                            <span id="{{ action.type }}-nd20">{{ action.nd20 }}</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="btn btn-dark btn-sm btn-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd20">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </article>
+            </div>
         </div>
-        <table class="attributes-table">
-            <tr>
-                <th>Atributo</th>
-                <th></th>
-                <th>Total</th>
-                <th></th>
-                <th></th>
-                <th>Treino</th>
-                <th></th>
-            </tr>
-            {% for attribute in attributes %}
-            <tr>
-                <td>{{ attribute.type }}</td>
-                <td><button class="button-upgrade-attr" value="{{ attribute.type }}" id="decrement-{{ attribute.type }}">-</button></td>
-                <td id="{{ attribute.type }}-total-value">{{ attribute.total_value }}</td>
-                <td><button class="button-upgrade-attr" value="{{ attribute.type }}" id="increment-{{ attribute.type }}">+</button></td>
-                <td><button class="button-train-attr" value="{{ attribute.type }}" id="decrement-train-{{ attribute.type }}">-</button></td>
-                <td id="{{ attribute.type }}-training-level">{{ attribute.training_level }}</td>
-                <td><button class="button-train-attr" value="{{ attribute.type }}" id="increment-train-{{ attribute.type }}">+</button></td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-    <div class="actions-information">
-        <div>
-            <h2>Ações</h2>
-            <h3>1d4: 200 XP 1d6: 300 XP 1d8: 400 XP 1d10: 500 XP 1d12: 600 XP 1d20: 800 XP</h3>
+        <div class="row m-1">
+            <div class="col-12">
+                <div class="row">
+                    <article class="card custom-card p-2">
+                        <div class="row">
+                            <div class="col-6 d-flex flex-row justify-content-evenly align-items-center">
+                                <h5>Ações de Movimento</h5>
+                                <h5 id="character-movement-actions">{{ character.movement_actions }}</h5>
+                                <div class="buttons">
+                                    <button value="movement" id="increase-movement-button" class="btn-battle-action btn btn-primary m-1">{{ character.movement_action_cost }} XP</button>
+                                    <button value="movement" id="decrease-movement-button" class="btn-battle-action btn btn-secondary m-1">Desfazer</button>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex flex-row justify-content-evenly align-items-center">
+                                <h5>Ações Padrão</h5>
+                                <h5 id="character-main-actions">{{ character.main_actions }}</h5>
+                                <div class="buttons">
+                                    <button value="main" id="increase-main-button" class="btn-battle-action btn btn-primary m-1">{{ character.main_action_cost }} XP</button>
+                                    <button value="main" id="decrease-main-button" class="btn-battle-action btn btn-secondary m-1">Desfazer</button>
+                                </div>
+                            </div>
+                        </div>                        
+                    </article>
+                </div>
+            </div>
         </div>
-        <div>
-            <table>
-                <tr>
-                    <th>Ação</th>
-                    <th></th>
-                    <th>d4</th>
-                    <th></th>
-                    <th></th>
-                    <th>d6</th>
-                    <th></th>
-                    <th></th>
-                    <th>d8</th>
-                    <th></th>
-                    <th></th>
-                    <th>d10</th>
-                    <th></th>
-                    <th></th>
-                    <th>d12</th>
-                    <th></th>
-                    <th></th>
-                    <th>d20</th>
-                    <th></th>
-                </tr>
-                {% for action in actions %}
-                <tr>
-                    <td>{{ action.type }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd4">-</button></td>
-                    <td id="{{ action.type }}-nd4">{{ action.nd4 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd4">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd6">-</button></td>
-                    <td id="{{ action.type }}-nd6">{{ action.nd6 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd6">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd8">-</button></td>
-                    <td id="{{ action.type }}-nd8">{{ action.nd8 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd8">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd10">-</button></td>
-                    <td id="{{ action.type }}-nd10">{{ action.nd10 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd10">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd12">-</button></td>
-                    <td id="{{ action.type }}-nd12">{{ action.nd12 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd12">+</button></td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="sub-{{ action.type }}-nd20">-</button></td>
-                    <td id="{{ action.type }}-nd20">{{ action.nd20 }}</td>
-                    <td><button class="button-upgrade-action" value="{{ action.type }}" id="add-{{ action.type }}-nd20">+</button></td>
-                </tr>
-                {% endfor %}         
-            </table>
-        </div>
-    </div>
-    <div class="battle-information">
-        <table>
-            <tr>
-                <th>Ações de Movimento</th>
-                <td id="character-movement-actions">{{ character.movement_actions }}</td>
-                <td>
-                    <button value="movement" id="increase-movement-button">{{ character.movement_action_cost }} XP</button>
-                </td>
-                <td>
-                    <button value="movement" id="decrease-movement-button">Desfazer</button>
-                </td>
-            </tr>
-            <tr>
-                <th>Ações Padrão</th>
-                <td id="character-main-actions">{{ character.main_actions }}</td>
-                <td>
-                    <button value="main" id="increase-main-button">{{ character.main_action_cost }} XP</button>
-                </td>
-                <td>
-                    <button value="main" id="decrease-main-button">Desfazer</button>
-                </td>
-            </tr>
-        </table>
-    </div>    
-    <div>
+    </section>
+    <section class="m-3">
         <form action="{% url 'main' character.pk %}">
-            <input type="submit" value="Finalizar">
+            <input type="submit" value="Finalizar" class="btn btn-primary w-100">
         </form>
-    </div>
+    </section>
 
     {% block javascript %}
     {% include 'partials/_script.html' %}

@@ -20,6 +20,48 @@ class CreateCharForm(forms.ModelForm):
             'school',
             'aspiration',
         ]
+        widgets = {
+            'name': forms.TextInput(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'origin': forms.TextInput(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'race': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'weight': forms.NumberInput(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'height': forms.NumberInput(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'age': forms.NumberInput(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'school': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'aspiration': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+        }
 
 class AttributeForm(forms.ModelForm):
     class Meta:
@@ -30,6 +72,28 @@ class AttributeForm(forms.ModelForm):
             'temp_value',
             'training_level',
         ]
+        widgets = {
+            'current_value': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'total_value': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'temp_value': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'training_level': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+        }
 
 class ActionForm(forms.ModelForm):
     class Meta:
@@ -44,3 +108,45 @@ class ActionForm(forms.ModelForm):
             'flat_bonus',
             'flat_penalty',
         ]
+        widgets = {
+            'nd4': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end',
+                }
+            ),
+            'nd6': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'nd8': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'nd10': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'nd12': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'nd20': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'flat_bonus': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+            'flat_penalty': forms.NumberInput(
+                attrs={
+                    'class': 'form-control text-end'
+                }
+            ),
+        }

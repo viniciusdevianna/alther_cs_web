@@ -4,7 +4,12 @@ class LoginForm(forms.Form):
     username = forms.CharField(
         label="Nome de Usuário",
         required=True,
-        max_length=100
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            }
+        )
     )
     password = forms.CharField(
         label="Senha",
@@ -12,7 +17,7 @@ class LoginForm(forms.Form):
         max_length=50,
         widget=forms.PasswordInput(
             attrs={
-                "class": "form-group"
+                "class": "form-control"
             }
         )
     )
@@ -22,6 +27,11 @@ class SignupForm(forms.Form):
         label="Seu Nome",
         required=True,
         max_length=200,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            }
+        )
     )
     user_mail = forms.EmailField(
         label="Seu E-mail",
@@ -37,7 +47,12 @@ class SignupForm(forms.Form):
     username = forms.CharField(
         label="Nome de Usuário",
         required=True,
-        max_length=50
+        max_length=50,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            }
+        )
     )
     password = forms.CharField(
         label="Senha",
@@ -45,7 +60,7 @@ class SignupForm(forms.Form):
         max_length=50,
         widget=forms.PasswordInput(
             attrs={
-                "class": "form-group"
+                "class": "form-control"
             }
         )
     )
@@ -55,7 +70,7 @@ class SignupForm(forms.Form):
         max_length=50,
         widget=forms.PasswordInput(
             attrs={
-                "class": "form-group"
+                "class": "form-control"
             }
         )
     )

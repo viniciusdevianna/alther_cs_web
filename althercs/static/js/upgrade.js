@@ -19,7 +19,7 @@ function upgradeAttributeValue(event) {
             } else {
                 $(`#${attributeType}-total-value`).text(response['result']);
             }            
-            $('#current-xp').text(`XP Disponível: ${response['update_xp']}`);
+            $('#current-xp').text(`${response['update_xp']}`);
         },
         error: (response) => {
             alert(response.responseJSON.error);
@@ -41,7 +41,7 @@ function upgradeBattleAction(event) {
         },
         success: (response) => {
             $(`#character-${battleActionType}-actions`).text(response['result']);
-            $('#current-xp').text(`XP Disponível: ${response['update_xp']}`);
+            $('#current-xp').text(`${response['update_xp']}`);
             $(`#increase-${battleActionType}-button`).html(`${response['new_cost']} XP`);
         },
         error: (response) => {
@@ -66,7 +66,7 @@ function upgradeActionDice(event) {
         },
         success: (response) => {
             $(`#${actionType}-${dice}`).text(response['result']);
-            $('#current-xp').text(`XP Disponível: ${response['update_xp']}`);
+            $('#current-xp').text(`${response['update_xp']}`);
         },
         error: (response) => {
             alert(response.responseJSON.error);
@@ -75,19 +75,19 @@ function upgradeActionDice(event) {
     event.preventDefault();
 }
 
-$.each([$('.attributes-information button')], (index, element) => {
+$.each([$('.attr-btn')], (index, element) => {
     element.on('click', (event) => {        
         upgradeAttributeValue(event);
     })
 });
 
-$.each([$('.actions-information button')], (index, element) => {
+$.each([$('.btn-upgrade-action')], (index, element) => {
     element.on('click', (event) => {
         upgradeActionDice(event);
     })
 });
 
-$.each([$('.battle-information button')], (index, element) => {
+$.each([$('.btn-battle-action')], (index, element) => {
     element.on('click', (event) => {
         upgradeBattleAction(event);
     })

@@ -1,9 +1,11 @@
 // Character identification
 const charID = $('.main-information').data('character');
 
-function updateRollResultBox(rollResult, actionID) {
-    const rollBox = $(`#action-${actionID}`);
-    rollBox.text(rollResult);
+function updateRollResultBox(rollResult, actionType) {
+    const rollValue = $('#rollResultValue');
+    const rollAction = $('#rollResultAction');
+    rollValue.html(rollResult);
+    rollAction.html(actionType);
 }
 
 function updateBasicInfo(selector, infoToUpdate, event) {
@@ -107,7 +109,8 @@ $('.roll-button').on('click', (event) => {
         data: { 'action_ID': actionID },
         success: (response) => {
             rollResult = response.roll.result;
-            updateRollResultBox(rollResult, actionID);
+            actionType = response.action;
+            updateRollResultBox(rollResult, actionType);
         },
         error: () => {
             console.log("Error");

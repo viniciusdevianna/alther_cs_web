@@ -19,12 +19,20 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
   }
 
 /* Header */
 .logo-img {
-    width: 306px;
-    height: 98px;
+    width: 153px;
+    height: 49px;
+}
+
+@media (min-width: 576px) {
+    .logo-img {
+        width: 306px;
+        height: 98px;
+    }
 }
 
 .main-text {
@@ -38,14 +46,25 @@ input[type=number] {
 }
 
 .school-logo-img {
-    width: 60px;
+    width: 100px;
     height: 100px;
     object-fit: scale-down;
     flex-shrink: 1;
 }
 
+.path-img {
+    width: 50%;
+    height: 300px;
+    object-fit: cover;
+    object-position: 0% 30%;
+    opacity: 50%;
+    z-index: 0;
+}
+
 .custom-card {
     border-color: #ba1019!important;
+    max-width: 100%;
+    min-width: 250px;
 }
 
 .circle-input {
@@ -60,4 +79,38 @@ input[type=number] {
 
 .hp-value {
     min-width: 50px;
+}
+
+.skill-slot-general {
+    color: black;
+    -webkit-text-stroke: 1px #fff;
+}
+
+.skill-slot-intrinsic {
+    color: #ba1019;
+    -webkit-text-stroke: 1px #fff;
+}
+
+.skill-slot-unlearned {
+    color: green;
+    -webkit-text-stroke: 1px #fff;
+}
+
+.skill-information {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    padding: 2px;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    font-size: calc(1.3rem + .6vw);
+}
+
+.btn-cost {
+    width: 100px;
 }

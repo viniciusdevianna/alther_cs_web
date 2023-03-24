@@ -1,34 +1,54 @@
 {% include 'partials/_head.html' with page_title='Aprender Habilidades' %}
+{% load static %}
 <body>
     {% include 'partials/_header.html' %}
     {% include 'partials/_alerts.html' %}
-    <h1>{{ character.name }} está aprendendo habilidades</h1>
-    <p>PC disponível: {{ active_path.current_pp }}</p>
-    <h2>{{ character.active_path }}</h2>
-    <div>
-        <form action="{% url 'skills' character.pk %}" method="POST">
-            {% csrf_token %}
-            <div>
-                {% for skill in active_path_skills %}
-                {% if skill in learned_skills %}
-                    <h3 style="color: red">{{ skill }} (learned)</h3>
-                {% else %}
-                    <h3 style="color: green">{{ skill }}</h3>
-                    <button type="submit" name="skill_ID" value="{{ skill.pk }}">Aprender</button>
-                {% endif %}
-                    <p>{{ skill.category }}</p>
-                    <p>{{ skill.description }}</p>
-                    <p>{{ skill.cost }} PC</p>
-                {% endfor %}
+    <main>
+        <section class="main-information m-2 d-flex flex-column">
+            <div class="section-title mb-2 d-flex justify-content-between">
+                <h2 class="main-text">Habilidades</h2>
+                <div class="pp-information d-flex flex-row align-items-center">
+                    <h4 class="me-3">PC Disponível</h4>
+                    <h4 class="border border-2 rounded-pill py-2 px-3" id="current-xp">{{ active_path.current_pp }}</h4>
+                </div>
             </div>
-        </form>
-    </div>
-    <div>
-        <form action="{% url 'main' %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" value="{{ character.pk }}" name="character">Finalizar</button>
-        </form>
-    </div>
+            <div class="path-card shadow-lg border border-1 rounded d-flex flex-row justify-content-between align-items-center bg-dark">
+                <div class="path-name w-50">
+                    <h2 class="main-text ms-3 text-light text-center">{{ character.active_path }}</h2>
+                </div>
+                <img src="{% static 'assets/img/paths/' %}{{ character.active_path.path_ID|lower }}.png " alt="imagem do caminho ativo" class="path-img">
+            </div>
+            <div class="skills-form">
+                <form action="{% url 'skills' character.pk %}" method="POST">
+                    {% csrf_token %}
+                    <div class="skill-cards">
+                        {% for skill in active_path_skills %}                        
+                        <article class="skill-card card m-2">
+                            <div class="card-header bg-dark d-flex flex-row justify-content-between">
+                                {% if skill in learned_skills %}
+                                <h2 class="main-text skill-slot-general">{{ skill }}</h2>
+                                {% else %}
+                                <h2 class="main-text skill-slot-unlearned">{{ skill }}</h2>
+                                <button type="submit" name="skill_ID" value="{{ skill.pk }}" class="btn btn-primary btn-cost">{{ skill.cost }}</button>
+                                {% endif %}
+                            </div>
+                            <div class="card-body bg-light">
+                                <h6 class="card-subtitle text-primary">{{ skill.category }}</h6>
+                                <p>{{ skill.description }}</p>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </form>                
+            </div>
+            <div class="confirmation">
+                <form action="{% url 'main' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" value="{{ character.pk }}" name="character" class="btn btn-primary w-100">Finalizar</button>
+                </form>
+            </div>
+        </section>
+    </main>
     {% include 'partials/_script.html' %}   
 </body>
 </html>

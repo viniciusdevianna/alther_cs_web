@@ -39,8 +39,9 @@ def load_char_data(character: Character) -> dict:
 def load_char_equipped_skills(skills: EquippedSkill) -> dict:
     equipped_skills_dict = {}
     
-    for field in EquippedSkill._meta.get_fields()[2:]:
-        equipped_skills_dict[field.name] = getattr(skills, field.name)
+    for field in skills.get_slots():
+        if field != 'intrinsic':
+            equipped_skills_dict[field] = getattr(skills, field)
 
     return equipped_skills_dict
 
@@ -69,7 +70,12 @@ def roll_action(request):
     action_to_roll = Action.objects.get(pk=action_ID)
     roll = action_to_roll.roll_dice()
 
-    return JsonResponse({"roll": roll})
+    response = {
+        "roll": roll,
+        "action": action_to_roll.type
+    }
+
+    return JsonResponse(response)
 
 
 def level_up(request):

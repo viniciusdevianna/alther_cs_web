@@ -1,23 +1,35 @@
-{% include 'partials/_head.html' with page_title='Atributos' %}
+{% include 'partials/_head.html' with page_title=page_title %}
 <body>
     {% include 'partials/_header.html' %}
     {% include 'partials/_alerts.html' %}
-    <h1>Atributos de {{ character.name }}</h1>
-    <form action="{% url 'update_attributes' character.id %}" method="POST">
-        {% csrf_token %}
-        <div>
-            {% for form in forms %}
-                <p>{{ form.instance.type }}</p>
-                {% for field in form.visible_fields %}
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-        </div>
-        {% endfor %}
-        {% endfor %}
-        <div>
-            <button type="submit">Atualizar</button>
-        </div>
-    </form>
-    {% include 'partials/_script.html' %}
+    <main class="d-flex flex-column align-items-center">
+        <h1 class="main-text">Atributos de {{ character.name }}</h1>
+        <form action="{% url 'update_attributes' character.pk %}" method="POST">
+            {% csrf_token %}
+            <div class="container-fluid">
+                {% for form in forms %}
+                <div class="row">
+                    <div class="section-title">
+                        <h3>{{ form.instance.type }}</h3>
+                    </div>
+                </div>
+                <div class="row mb-2 bg-light">                    
+                    {% for field in form.visible_fields %}
+                    <div class="col-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>        
+                {% endfor %}
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary w-100">Atualizar</button>
+                    </div>                    
+                </div>
+            </div>
+        </form>
+    </main> 
+    {% include 'partials/_script.html' %}       
 </body>
 </html>
