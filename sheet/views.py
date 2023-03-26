@@ -11,7 +11,7 @@ def owner_test(user: User, character: Character):
     return user == character.player_ID
 
 def is_ajax(request):
-    return request.accepts('application/json') and request.method == 'GET'
+    return request.accepts('applicationjson') and request.method == 'GET'
 
 # Loading functions
 def load_char_data(character: Character) -> dict:
