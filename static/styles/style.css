@@ -1,7 +1,7 @@
 /* Fonts */
 @font-face {
     font-family: 'okamiregular';
-    src: url("../assets/fonts/okami-webfont.woff") format('woff2'),
+    src: url("../assets/fonts/okami-webfont.woff2") format('woff2'),
          url("../assets/fonts/okami-webfont.woff") format('woff');
     font-weight: normal;
     font-style: normal;

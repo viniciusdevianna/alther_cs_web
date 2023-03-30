@@ -1,8 +1,8 @@
 /* Fonts */
 @font-face {
     font-family: 'okamiregular';
-    src: url("https://devianna.s3.sa-east-1.amazonaws.com/static/assets/fonts/okami-webfont.woff2") format('woff2'),
-         url("https://devianna.s3.sa-east-1.amazonaws.com/static/assets/fonts/okami-webfont.woff") format('woff');
+    src: url("../assets/fonts/okami-webfont.woff2") format('woff2'),
+         url("../assets/fonts/okami-webfont.woff") format('woff');
     font-weight: normal;
     font-style: normal;
 }
